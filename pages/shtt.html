@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-4 sm:p-6 bg-white text-gray-800">
+    <div class="space-y-4">
+        <h2 class="text-md font-bold text-gray-700">Theo Dõi Sở Hữu Trí Tuệ</h2>
+        <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
+            <select id="filter-type" onchange="render()" class="border border-gray-200 rounded-xl p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="All">Tất cả loại hình văn bằng</option><option value="Bằng sáng chế">Bằng sáng chế</option><option value="Bản quyền tác giả">Bản quyền tác giả</option><option value="Nhãn hiệu">Nhãn hiệu</option>
+            </select>
+            <select id="filter-state" onchange="render()" class="border border-gray-200 rounded-xl p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="All">Tất cả trạng thái đơn</option><option value="Chưa nộp đơn">Chưa nộp đơn</option><option value="Đã nộp đơn">Đã nộp đơn</option><option value="Đã cấp giấy">Đã cấp giấy</option>
+            </select>
+        </div>
+        <div class="border border-gray-100 rounded-xl overflow-hidden overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm min-w-[600px]">
+                <thead class="bg-indigo-900 text-white uppercase text-[11px]">
+                    <tr><th class="p-3 text-center">Mã DA</th><th class="p-3">Tên dự án</th><th class="p-3">Loại hình</th><th class="p-3">Tên văn bằng ý tưởng</th><th class="p-3 text-center">Hiện trạng đơn</th></tr>
+                </thead>
+                <tbody id="table-body" class="divide-y divide-gray-100"></tbody>
+            </table>
+        </div>
+    </div>
+    <script src="../js/data.js"></script>
+    <script>
+        function render() {
+            const type = document.getElementById('filter-type').value;
+            const state = document.getElementById('filter-state').value;
+
+            let filtered = db_shtt.filter(s => (type === 'All' || s.type === type) && (state === 'All' || s.state === state));
+            document.getElementById('table-body').innerHTML = filtered.map(s => {
+                let proj = db_projects.find(p => p.id === s.id);
+                return `<tr class="hover:bg-gray-50"><td class="p-3 font-bold text-center text-indigo-900">${s.id}</td><td class="p-3 font-medium">${proj?proj.name:'N/A'}</td><td class="p-3">${s.type}</td><td class="p-3">${s.name}</td><td class="p-3 text-center">${s.state}</td></tr>`;
+            }).join('');
+        }
+        window.onload = render;
+    </script>
+</body>
+</html>

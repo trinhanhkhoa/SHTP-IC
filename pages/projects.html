@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-4 sm:p-6 bg-white text-gray-800">
+    <div class="space-y-4">
+        <h2 class="text-md font-bold text-gray-700">Danh sách dự án đã và đang ươm tạo</h2>
+        <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+            <input type="text" id="search-projects" oninput="render()" placeholder="Tìm kiếm tên dự án..." class="border border-gray-200 rounded-xl p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <select id="filter-sector" onchange="render()" class="border border-gray-200 rounded-xl p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="All">Tất cả lĩnh vực</option><option value="Công nghệ số">Công nghệ số</option><option value="IoT">IoT</option><option value="AI">AI</option><option value="Sinh học">Sinh học</option>
+            </select>
+            <select id="filter-status" onchange="render()" class="border border-gray-200 rounded-xl p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="All">Tất cả trạng thái</option><option value="Còn hoạt động">Còn hoạt động</option><option value="Tạm ngừng">Tạm ngừng</option><option value="Ngưng hoạt động">Ngưng hoạt động</option>
+            </select>
+        </div>
+        <div class="border border-gray-100 rounded-xl overflow-hidden overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm min-w-[700px]">
+                <thead class="bg-indigo-900 text-white uppercase text-[11px]">
+                    <tr><th class="p-3 text-center">Mã DA</th><th class="p-3">Tên dự án</th><th class="p-3">Lĩnh vực</th><th class="p-3">Hiện trạng</th><th class="p-3 text-center">Năm UT</th><th class="p-3 text-right">Doanh thu</th></tr>
+                </thead>
+                <tbody id="table-body" class="divide-y divide-gray-100"></tbody>
+            </table>
+        </div>
+    </div>
+    <script src="../js/data.js"></script>
+    <script>
+        function render() {
+            const sVal = document.getElementById('search-projects').value.toLowerCase().trim();
+            const sec = document.getElementById('filter-sector').value;
+            const stat = document.getElementById('filter-status').value;
+
+            let filtered = db_projects.filter(p => {
+                return p.name.toLowerCase().includes(sVal) && (sec === 'All' || p.sector === sec) && (stat === 'All' || p.status === stat);
+            });
+
+            document.getElementById('table-body').innerHTML = filtered.map(p => `
+                <tr class="hover:bg-gray-50"><td class="p-3 font-bold text-center text-indigo-900">${p.id}</td><td class="p-3 font-semibold">${p.name}</td><td class="p-3">${p.sector}</td><td class="p-3">${p.status}</td><td class="p-3 text-center">${p.year}</td><td class="p-3 text-right font-bold">${new Intl.NumberFormat('vi-VN').format(p.revenue)} Đ</td></tr>
+            `).join('');
+        }
+        window.onload = render;
+    </script>
+</body>
+</html>
