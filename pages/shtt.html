@@ -3,38 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="p-4 sm:p-6 bg-white text-gray-800">
+<body class="p-3 sm:p-5 bg-white text-xs sm:text-sm text-gray-800">
     <div class="space-y-4">
-        <h2 class="text-md font-bold text-gray-700">Theo Dõi Sở Hữu Trí Tuệ</h2>
-        <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
-            <select id="filter-type" onchange="render()" class="border border-gray-200 rounded-xl p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                <option value="All">Tất cả loại hình văn bằng</option><option value="Bằng sáng chế">Bằng sáng chế</option><option value="Bản quyền tác giả">Bản quyền tác giả</option><option value="Nhãn hiệu">Nhãn hiệu</option>
-            </select>
-            <select id="filter-state" onchange="render()" class="border border-gray-200 rounded-xl p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                <option value="All">Tất cả trạng thái đơn</option><option value="Chưa nộp đơn">Chưa nộp đơn</option><option value="Đã nộp đơn">Đã nộp đơn</option><option value="Đã cấp giấy">Đã cấp giấy</option>
-            </select>
+        <div class="flex justify-between items-center flex-wrap gap-2">
+            <h2 class="font-bold text-gray-700 uppercase tracking-wider text-xs"><i class="fa-solid fa-certificate mr-1 text-indigo-900"></i>Sheet 3: Tiến Độ Sở Hữu Trí Tuệ</h2>
+            <button onclick="toggleModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-sm"><i class="fa-solid fa-plus mr-1"></i>Đăng Ký Văn Bằng</button>
         </div>
-        <div class="border border-gray-100 rounded-xl overflow-hidden overflow-x-auto">
-            <table class="w-full text-left text-xs sm:text-sm min-w-[600px]">
-                <thead class="bg-indigo-900 text-white uppercase text-[11px]">
-                    <tr><th class="p-3 text-center">Mã DA</th><th class="p-3">Tên dự án</th><th class="p-3">Loại hình</th><th class="p-3">Tên văn bằng ý tưởng</th><th class="p-3 text-center">Hiện trạng đơn</th></tr>
+        
+        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+            <input type="text" id="s-title" oninput="render()" placeholder="Tìm theo tên dự án / tên tài sản..." class="border border-gray-200 rounded-xl p-2 text-xs bg-white focus:outline-none">
+            <select id="f-type" onchange="render()" class="border border-gray-200 rounded-xl p-2 text-xs bg-white"><option value="All">Tất cả loại văn bằng</option><option value="SC">Bằng sáng chế</option><option value="GPHI">Giải pháp hữu ích</option><option value="BQTG">Bản quyền tác giả</option><option value="NH">Nhãn hiệu</option></select>
+            <select id="f-state" onchange="render()" class="border border-gray-200 rounded-xl p-2 text-xs bg-white"><option value="All">Tất cả trạng thái đơn</option><option value="Chưa nộp đơn">Chưa nộp đơn</option><option value="Đã nộp đơn">Đã nộp đơn</option><option value="Đã cấp giấy">Đã cấp giấy</option></select>
+        </div>
+
+        <div class="border border-gray-100 rounded-xl overflow-hidden overflow-x-auto shadow-sm">
+            <table class="w-full text-left min-w-[700px]">
+                <thead class="bg-indigo-900 text-white text-[11px] uppercase">
+                    <tr>
+                        <th class="p-3 text-center w-12">STT</th>
+                        <th class="p-3">Tên dự án chủ quản</th>
+                        <th class="p-3">Loại hình văn bằng</th>
+                        <th class="p-3">Tên tài sản trí tuệ (TSTT)</th>
+                        <th class="p-3 font-mono">Số đơn</th>
+                        <th class="p-3 text-center">Hiện trạng đơn</th>
+                    </tr>
                 </thead>
-                <tbody id="table-body" class="divide-y divide-gray-100"></tbody>
+                <tbody id="tbody" class="divide-y divide-gray-100"></tbody>
             </table>
         </div>
     </div>
-    <script src="../js/data.js"></script>
-    <script>
-        function render() {
-            const type = document.getElementById('filter-type').value;
-            const state = document.getElementById('filter-state').value;
 
-            let filtered = db_shtt.filter(s => (type === 'All' || s.type === type) && (state === 'All' || s.state === state));
-            document.getElementById('table-body').innerHTML = filtered.map(s => {
-                let proj = db_projects.find(p => p.id === s.id);
-                return `<tr class="hover:bg-gray-50"><td class="p-3 font-bold text-center text-indigo-900">${s.id}</td><td class="p-3 font-medium">${proj?proj.name:'N/A'}</td><td class="p-3">${s.type}</td><td class="p-3">${s.name}</td><td class="p-3 text-center">${s.state}</td></tr>`;
+    <div id="local-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden">
+            <div class="bg-indigo-900 text-white p-4 flex justify-between items-center"><h3 class="font-bold text-xs">ĐĂNG KÝ VĂN BẰNG SHTT</h3><button onclick="toggleModal()" class="text-xl">&times;</button></div>
+            <form onsubmit="submitForm(event)" class="p-4 space-y-3 text-xs">
+                <div class="flex flex-col"><label class="font-bold text-gray-500 mb-1">MÃ DỰ ÁN CHỦ QUẢN *</label><input type="text" id="add-id" placeholder="VD: DA001" required class="border p-2 rounded-xl focus:outline-none"></div>
+                <div class="flex flex-col"><label class="font-bold text-gray-500 mb-1">LOẠI HÌNH SHTT</label><select id="add-type" class="border p-2 rounded-xl"><option value="SC">Bằng sáng chế (SC)</option><option value="GPHI">Giải pháp hữu ích (GPHI)</option><option value="BQTG">Bản quyền tác giả (BQTG)</option><option value="NH">Nhãn hiệu (NH)</option></select></div>
+                <div class="flex flex-col"><label class="font-bold text-gray-500 mb-1">TÊN CHI TIẾT TÀI SẢN TRÍ TUỆ *</label><input type="text" id="add-name" required class="border p-2 rounded-xl focus:outline-none"></div>
+                <div class="flex flex-col"><label class="font-bold text-gray-500 mb-1">SỐ ĐƠN</label><input type="text" id="add-docNum" placeholder="VD: 1-2026-00001" class="border p-2 rounded-xl focus:outline-none"></div>
+                <div class="flex flex-col"><label class="font-bold text-gray-500 mb-1">TRẠNG THÁI TIẾN ĐỘ</label><select id="add-state" class="border p-2 rounded-xl"><option value="Chưa nộp đơn">Chưa nộp đơn</option><option value="Đã nộp đơn">Đã nộp đơn</option><option value="Đã cấp giấy">Đã cấp giấy</option></select></div>
+                <div class="flex justify-end space-x-2 pt-2 border-t">
+                    <button type="button" onclick="toggleModal()" class="px-3 py-1.5 bg-gray-100 rounded-lg">Hủy</button>
+                    <button type="submit" class="px-3 py-1.5 bg-indigo-600 text-white rounded-lg">Lưu lại</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 1. LẤY ĐẦY ĐỦ DỮ LIỆU TỪ BỘ NHỚ LOCALSTORAGE (Sửa lỗi db_projects is not defined)
+        const db_projects = JSON.parse(localStorage.getItem('db_projects')) || [];
+        const db_shtt = JSON.parse(localStorage.getItem('db_shtt')) || [];
+
+        function render() {
+            const sTitle = document.getElementById('s-title').value.toLowerCase().trim();
+            const type = document.getElementById('f-type').value;
+            const state = document.getElementById('f-state').value;
+
+            // 2. LỌC DỮ LIỆU AN TOÀN (Bảo vệ biến tránh lỗi toLowerCase)
+            let filtered = db_shtt.filter(s => {
+                // Tìm tên dự án realtime từ bảng dự án gốc để làm từ khóa tìm kiếm
+                const foundProj = db_projects.find(p => p.id === s.id);
+                const pName = foundProj ? foundProj.name.toLowerCase() : "";
+                const sName = s.name ? s.name.toLowerCase() : "";
+                const sId = s.id ? s.id.toLowerCase() : "";
+
+                const matchText = pName.includes(sTitle) || sName.includes(sTitle) || sId.includes(sTitle);
+                const matchType = (type === 'All' || s.type === type);
+                const matchState = (state === 'All' || s.state === state);
+                
+                return matchText && matchType && matchState;
+            });
+
+            let count = 1;
+            document.getElementById('tbody').innerHTML = filtered.map(s => {
+                // Lấy tên dự án realtime hiển thị lên bảng (Khắc phục lỗi hiển thị N/A)
+                const foundProj = db_projects.find(p => p.id === s.id);
+                const projectNameRealtime = foundProj ? foundProj.name : "N/A";
+
+                return `
+                    <tr class="hover:bg-gray-50/50">
+                        <td class="p-2.5 font-bold text-center text-gray-400">${count++}</td>
+                        <td class="p-2.5 font-semibold text-gray-800">${projectNameRealtime}</td>
+                        <td class="p-2.5 font-medium"><span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-xs">${s.type}</span></td>
+                        <td class="p-2.5 text-gray-700 font-medium">${s.name}</td>
+                        <td class="p-2.5 font-mono text-gray-500 text-xs">${s.docNum || '-'}</td>
+                        <td class="p-2.5 text-center font-semibold text-blue-600">${s.state}</td>
+                    </tr>
+                `;
             }).join('');
+        }
+
+        function toggleModal() {
+            const modal = document.getElementById('local-modal');
+            modal.classList.toggle('hidden'); modal.classList.toggle('flex');
+        }
+
+        function submitForm(e) {
+            e.preventDefault();
+            const success = window.parent.addNewShttData({
+                id: document.getElementById('add-id').value.trim().toUpperCase(),
+                type: document.getElementById('add-type').value,
+                name: document.getElementById('add-name').value.trim(),
+                docNum: document.getElementById('add-docNum').value.trim(),
+                state: document.getElementById('add-state').value
+            });
+            if(success) {
+                toggleModal();
+                window.location.reload();
+            }
         }
         window.onload = render;
     </script>
