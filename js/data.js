@@ -161,9 +161,9 @@ const default_projects = [
 
 // DỮ LIỆU MẪU SHTT ĐỒNG BỘ
 const default_shtt = [
-    { id: "DA001", projectName: "AgriTech Việt Nam", type: "SC", name: "Cảm biến mesh network tiết kiệm pin", docNum: "1-2023-00142", docDate: "2023-04-12", certNum: "1-0040983-000", certDate: "2025-01-15", state: "CB", source: "VU" },
-    { id: "DA001", projectName: "AgriTech Việt Nam", type: "NH", name: "Logo IoT-Chain và nhận diện", docNum: "4-2023-45122", docDate: "2023-06-20", certNum: "4-0021455-000", certDate: "2024-11-02", state: "CB", source: "DA" },
-    { id: "DA004", projectName: "Medicom AI", type: "BQTG", name: "Thuật toán nhận diện khối u AI-Health", docNum: "2345/2024/QTG", docDate: "2024-02-11", certNum: "2345/2024/QTG", certDate: "2024-03-01", state: "CB", source: "VU" },
+    { id: "DA001", projectName: "AgriTech Việt Nam", type: "SC", name: "Cảm biến mesh network tiết kiệm pin", docNum: "1-2023-00142", docDate: "2023-04-12", certNum: "1-0040983-000", certDate: "2025-01-15", state: "Cấp bằng", source: "VU" },
+    { id: "DA001", projectName: "AgriTech Việt Nam", type: "NH", name: "Logo IoT-Chain và nhận diện", docNum: "4-2023-45122", docDate: "2023-06-20", certNum: "4-0021455-000", certDate: "2024-11-02", state: "Cấp bằng", source: "DA" },
+    { id: "DA004", projectName: "Medicom AI", type: "BQTG", name: "Thuật toán nhận diện khối u AI-Health", docNum: "2345/2024/QTG", docDate: "2024-02-11", certNum: "2345/2024/QTG", certDate: "2024-03-01", state: "Cấp bằng", source: "VU" },
     { id: "DA005", projectName: "SmartLogi Drone", type: "SC", name: "Cơ chế cân bằng con quay hồi chuyển Drone tải nặng", docNum: "1-2025-00985", docDate: "2025-02-20", certNum: "", certDate: "", state: "Đã nộp đơn", source: "VU" }
 ];
 

@@ -3,72 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHTP-IC Project Dashboard - System Production</title>
+    <title>SHTP-IC Project Management System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/styles.css">
+    
+    <script src="js/data.js" defer></script>
+    <script src="js/app.js" defer></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .sidebar-blue { background-color: #0f172a; }
+        .active-link { background-color: #2563eb; color: white !important; }
+    </style>
 </head>
-<body class="bg-gray-50 font-sans text-gray-800">
-    <div id="login-screen" class="fixed inset-0 bg-indigo-950 flex items-center justify-center z-[100] px-4 overflow-y-auto py-6">
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 sm:p-8 space-y-6 animate-fade-in my-auto">
-            <div class="text-center space-y-2">
-                <div class="inline-flex items-center justify-center w-20 h-20 mb-2 overflow-hidden rounded-full border border-gray-100 bg-white p-1 shadow-sm">
-                    <i class="fa-solid fa-shield-halved text-3xl text-indigo-900"></i>
-                </div>
-                <h2 class="text-lg sm:text-xl font-bold text-gray-900 tracking-wide">HỆ THỐNG ƯƠM TẠO SHTP-IC</h2>
-                <p class="text-xs text-gray-400 font-medium">Vui lòng đăng nhập để truy cập hệ thống số hóa</p>
-            </div>
+<body class="overflow-hidden bg-slate-50 flex h-screen w-screen relative">
 
-            <div id="login-error" class="hidden bg-red-50 text-red-600 text-xs font-semibold p-3 rounded-lg border border-red-100 flex items-center space-x-2">
-                <i class="fa-solid fa-circle-exclamation text-sm"></i>
-                <span>Tài khoản hoặc mật khẩu không chính xác!</span>
+    <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900 px-4">
+        <div class="bg-white w-full max-w-md p-6 sm:p-8 rounded-2xl shadow-xl text-center space-y-5 border border-slate-100">
+            <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">
+                <i class="fa-solid fa-layer-group"></i>
             </div>
-
-            <form onsubmit="handleLogin(event)" class="space-y-4">
-                <div class="flex flex-col">
-                    <label class="text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Tên đăng nhập</label>
-                    <input type="text" id="username" required placeholder="Tài khoản (admin)" value="admin" class="w-full border border-gray-200 rounded-xl p-3 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
+            <div>
+                <h2 class="text-xl font-extrabold text-slate-800 tracking-tight">HỆ THỐNG ƯƠM TẠO SHTP-IC</h2>
+                <p class="text-xs text-slate-400 font-medium mt-1">Hệ thống quản trị và số hóa hồ sơ doanh nghiệp</p>
+            </div>
+            <div id="login-error" class="hidden text-xs font-bold text-red-600 bg-red-50 p-3 rounded-xl border border-red-100">Tài khoản hoặc mật khẩu không chính xác!</div>
+            <form onsubmit="handleLogin(event)" class="space-y-4 text-left">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Tên đăng nhập</label>
+                    <input type="text" id="username" required placeholder="admin" class="w-full border border-slate-200 rounded-xl p-3 text-xs outline-none focus:border-blue-500 bg-slate-50">
                 </div>
-                <div class="flex flex-col">
-                    <label class="text-xs font-bold text-gray-500 mb-1 uppercase tracking-wider">Mật khẩu</label>
-                    <input type="password" id="password" required placeholder="Mật khẩu (123456)" value="123456" class="w-full border border-gray-200 rounded-xl p-3 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Mật khẩu</label>
+                    <input type="password" id="password" required placeholder="******" class="w-full border border-slate-200 rounded-xl p-3 text-xs outline-none focus:border-blue-500 bg-slate-50">
                 </div>
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold p-3 rounded-xl shadow-md transition-all text-sm flex items-center justify-center space-x-2">
-                    <span>Đăng Nhập</span>
-                </button>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl text-xs tracking-wider shadow-sm transition-colors">ĐĂNG NHẬP</button>
             </form>
         </div>
     </div>
 
-    <div id="main-application" class="hidden min-h-screen flex flex-col">
-        <header class="bg-indigo-900 text-white shadow-md sticky top-0 z-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col md:flex-row justify-between items-center gap-3.5">
-                <div class="flex justify-between items-center w-full md:w-auto">
-                    <div class="flex items-center space-x-2.5">
-                        <i class="fa-solid fa-chart-pie text-xl sm:text-2xl text-cyan-400"></i>
-                        <h1 class="text-base sm:text-lg font-bold tracking-wide uppercase">SHTP-IC SỐ HÓA ƯƠM TẠO</h1>
-                    </div>
-                    <button onclick="toggleMobileMenu()" class="md:hidden text-white focus:outline-none text-xl p-1"><i id="menu-icon" class="fa-solid fa-bars"></i></button>
+    <div id="main-application" class="hidden w-full h-full flex relative">
+        
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 sidebar-blue text-slate-300 flex flex-col shadow-lg transform -translate-x-full lg:translate-x-0 lg:relative transition-transform duration-300 ease-in-out">
+            <div class="p-6 text-center border-b border-slate-800 flex flex-col items-center">
+                <div class="bg-white p-2 rounded-xl inline-block mb-3 shadow-md">
+                    <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center font-black text-white text-sm">IC</div>
                 </div>
-                
-                <div id="nav-container" class="hidden md:flex flex-col md:flex-row items-stretch md:items-center gap-3 w-full md:w-auto transition-all duration-300">
-                    <nav class="flex flex-col md:flex-row bg-indigo-950 p-1 rounded-xl gap-1 md:gap-0">
-                        <button onclick="switchPage('dashboard')" id="btn-dashboard" class="tab-btn px-3 py-2 text-left md:text-center rounded-lg font-medium text-xs sm:text-sm transition-all bg-indigo-600 text-white">Dashboard</button>
-                        <button onclick="switchPage('projects')" id="btn-projects" class="tab-btn px-3 py-2 text-left md:text-center rounded-lg font-medium text-xs sm:text-sm transition-all text-gray-300 hover:text-white">Danh Mục Dự Án</button>
-                        <button onclick="switchPage('shtt')" id="btn-shtt" class="tab-btn px-3 py-2 text-left md:text-center rounded-lg font-medium text-xs sm:text-sm transition-all text-gray-300 hover:text-white">Sở Hữu Trí Tuệ</button>
-                        <button onclick="switchPage('certs')" id="btn-certs" class="tab-btn px-3 py-2 text-left md:text-center rounded-lg font-medium text-xs sm:text-sm transition-all text-gray-300 hover:text-white">Chứng Nhận & Tiêu Chuẩn</button>
-                    </nav>
-                    <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3 py-2 rounded-xl flex items-center justify-center space-x-1.5 transition-all w-full md:w-auto"><span>Đăng xuất</span></button>
-                </div>
+                <h1 class="text-[10px] font-black tracking-[0.2em] text-blue-400 uppercase">Saigon Hi-Tech Park</h1>
             </div>
-        </header>
 
-        <main class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex-grow w-full">
-            <iframe id="content-frame" src="pages/dashboard.html" class="w-full h-[78vh] border border-gray-100 rounded-2xl shadow-sm bg-white"></iframe>
-        </main>
+            <nav class="flex-grow py-4 space-y-1.5 px-3 overflow-y-auto">
+                <button onclick="switchPage('dashboard')" id="btn-dashboard" class="nav-link w-full flex items-center px-4 py-3.5 text-slate-400 hover:text-white hover:bg-slate-800/60 text-xs font-bold transition-all rounded-xl active-link">
+                    <i class="fa-solid fa-chart-line text-sm w-5 mr-3 shrink-0"></i>
+                    <span class="text-left leading-tight">BÁO CÁO TỔNG QUAN</span>
+                </button>
+                <button onclick="switchPage('projects')" id="btn-projects" class="nav-link w-full flex items-center px-4 py-3.5 text-slate-400 hover:text-white hover:bg-slate-800/60 text-xs font-bold transition-all rounded-xl">
+                    <i class="fa-solid fa-cubes text-sm w-5 mr-3 shrink-0"></i>
+                    <span class="text-left leading-tight">DANH MỤC DỰ ÁN</span>
+                </button>
+                <button onclick="switchPage('shtt')" id="btn-shtt" class="nav-link w-full flex items-center px-4 py-3.5 text-slate-400 hover:text-white hover:bg-slate-800/60 text-xs font-bold transition-all rounded-xl">
+                    <i class="fa-solid fa-gavel text-sm w-5 mr-3 shrink-0"></i>
+                    <span class="text-left leading-tight">SỞ HỮU TRÍ TUỆ</span>
+                </button>
+                <button onclick="switchPage('certs')" id="btn-certs" class="nav-link w-full flex items-center px-4 py-3.5 text-slate-400 hover:text-white hover:bg-slate-800/60 text-xs font-bold transition-all rounded-xl">
+                    <i class="fa-solid fa-award text-sm w-5 mr-3 shrink-0"></i>
+                    <span class="text-left leading-tight">CHỨNG NHẬN & TIÊU CHUẨN</span>
+                </button>
+            </nav>
+
+            <div class="p-4 border-t border-slate-800">
+                <button onclick="handleLogout()" class="w-full flex items-center justify-center py-3 bg-slate-800 hover:bg-red-950/40 text-slate-400 hover:text-red-400 rounded-xl transition-all font-bold text-[10px] uppercase tracking-wider">
+                    <i class="fa-solid fa-power-off mr-2"></i> Đăng xuất
+                </button>
+            </div>
+        </aside>
+
+        <div id="sidebar-overlay" onclick="toggleMobileSidebar()" class="fixed inset-0 z-40 bg-slate-900/40 hidden lg:hidden"></div>
+
+        <div class="flex-grow flex flex-col overflow-hidden w-full">
+            <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-8 shadow-sm shrink-0">
+                <div class="flex items-center space-x-3">
+                    <button onclick="toggleMobileSidebar()" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl lg:hidden">
+                        <i class="fa-solid fa-bars text-sm"></i>
+                    </button>
+                    <div id="page-icon" class="hidden sm:p-2 sm:bg-blue-50 sm:text-blue-600 sm:rounded-lg sm:text-xs sm:block"><i class="fa-solid fa-chart-line"></i></div>
+                    <h2 id="page-title" class="text-xs sm:text-sm font-black text-slate-800 uppercase tracking-wider">Báo cáo tổng quan</h2>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="toggleModal('project-modal')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-xl font-bold text-[11px] sm:text-xs shadow-sm transition-colors flex items-center">
+                        <i class="fa-solid fa-plus mr-1"></i> <span class="hidden sm:inline">THÊM DỰ ÁN</span><span class="inline sm:hidden">THÊM</span>
+                    </button>
+                </div>
+            </header>
+
+            <main class="flex-grow overflow-hidden bg-slate-50 p-3 sm:p-6">
+                <iframe id="content-frame" src="pages/dashboard.html" class="w-full h-full border border-slate-200 rounded-2xl bg-white shadow-sm"></iframe>
+            </main>
+        </div>
     </div>
 
-    <script src="js/data.js"></script>
-    <script src="js/app.js"></script>
+    <script>
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        // Tự động đóng menu trên mobile khi người dùng click chọn chuyển đổi trang
+        const nativeSwitchPage = switchPage;
+        switchPage = function(page) {
+            if (typeof nativeSwitchPage === 'function') nativeSwitchPage(page);
+            if (window.innerWidth < 1024) {
+                toggleMobileSidebar();
+            }
+        }
+    </script>
 </body>
 </html>

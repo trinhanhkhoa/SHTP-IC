@@ -1,71 +1,74 @@
-// Các hàm handleLogin, handleLogout, switchPage giữ nguyên...
+const menuConfig = {
+    'dashboard': { title: 'Báo cáo tổng quan', icon: 'fa-chart-line' },
+    'projects': { title: 'Danh mục dự án', icon: 'fa-cubes' },
+    'shtt': { title: 'Sở hữu trí tuệ', icon: 'fa-gavel' },
+    'certs': { title: 'Chứng nhận & Tiêu chuẩn', icon: 'fa-award' }
+};
+
+function switchPage(page) {
+    document.getElementById('page-title').innerText = menuConfig[page].title;
+    document.getElementById('page-icon').innerHTML = `<i class="fa-solid ${menuConfig[page].icon}"></i>`;
+    document.getElementById('content-frame').src = `pages/${page}.html`;
+    
+    document.querySelectorAll('.nav-link').forEach(btn => btn.classList.remove('active-link'));
+    document.getElementById(`btn-${page}`).classList.add('active-link');
+}
+
 function handleLogin(e) {
     e.preventDefault();
-    if (document.getElementById('username').value.trim() === 'admin' && document.getElementById('password').value === '123456') {
+    if(document.getElementById('username').value === 'admin' && document.getElementById('password').value === '123456') {
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('main-application').classList.remove('hidden');
-        document.getElementById('content-frame').contentWindow.location.reload();
     } else {
         document.getElementById('login-error').classList.remove('hidden');
     }
 }
-function handleLogout() {
-    document.getElementById('main-application').classList.add('hidden');
-    document.getElementById('login-screen').classList.remove('hidden');
-}
-function toggleMobileMenu() {
-    document.getElementById('nav-container').classList.toggle('hidden');
-    document.getElementById('nav-container').classList.toggle('flex');
-}
-function switchPage(pageName) {
-    document.getElementById('content-frame').src = `pages/${pageName}.html`;
-    document.querySelectorAll('.tab-btn').forEach(el => {
-        el.classList.remove('bg-indigo-600', 'text-white');
-        el.classList.add('text-gray-300', 'hover:text-white');
-    });
-    document.getElementById(`btn-${pageName}`).classList.add('bg-indigo-600', 'text-white');
-}
-function toggleModal(id) {
-    const modal = document.getElementById(id);
-    modal.classList.toggle('hidden'); modal.classList.toggle('flex');
+
+function handleLogout() { location.reload(); }
+function toggleModal(id) { const el = document.getElementById(id); el.classList.toggle('hidden'); el.classList.toggle('flex'); }
+
+// BỘ PARSER DOANH THU THÔNG MINH PHÒNG CHỐNG LỖI 0Đ TRÊN DASHBOARD
+function parseRevenueToNumber(revStr) {
+    if (!revStr) return 0;
+    let str = revStr.toString().toLowerCase().trim().replace(/đ|vnd|đồng/g, '').trim();
+    let multiplier = 1;
+    if (str.includes('tỷ') || str.includes('ty')) { multiplier = 1e9; str = str.replace(/tỷ|ty/g, '').trim(); }
+    else if (str.includes('triệu') || str.includes('tr')) { multiplier = 1e6; str = str.replace(/triệu|tr/g, '').trim(); }
+    str = str.replace(/\./g, '').replace(/,/g, '.');
+    return (parseFloat(str) || 0) * multiplier;
 }
 
-function saveToStorage() {
-    localStorage.setItem('db_projects', JSON.stringify(db_projects));
-    localStorage.setItem('db_shtt', JSON.stringify(db_shtt));
-    localStorage.setItem('db_certs', JSON.stringify(db_certs));
+function formatRevenueToString(num) {
+    if (num >= 1e9) return (num / 1e9).toFixed(1).replace(/\.0$/, '') + " tỷ VNĐ";
+    if (num >= 1e6) return (num / 1e6).toFixed(0) + " triệu VNĐ";
+    return num.toLocaleString('vi-VN') + " Đ";
 }
 
-function addNewProjectData(newProj) {
-    if (db_projects.some(p => p.id === newProj.id)) {
-        alert("Mã dự án này đã tồn tại!");
-        return false;
-    }
-    db_projects.push(newProj);
-    db_shtt.push({ id: newProj.id, projectName: newProj.name, type: "SC", name: `TSTT thuộc ${newProj.name}`, docNum: "", docDate: "", certNum: "", certDate: "", state: "CNĐ/TĐHT", source: "VU" });
-    db_certs.push({ id: newProj.id, companyName: newProj.company, type: "DN Khoa học & Công nghệ", state: "Chưa nộp đơn", note: "Hồ sơ cơ sở" });
+function submitNewProject(e) {
+    e.preventDefault();
+    const projects = JSON.parse(localStorage.getItem('db_projects')) || [];
+    const newP = {
+        id: document.getElementById('add-id').value.trim().toUpperCase(),
+        name: document.getElementById('add-name').value.trim(),
+        company: document.getElementById('add-company').value.trim(),
+        sector: document.getElementById('add-sector').value,
+        manager: document.getElementById('add-manager').value.trim(),
+        phone: document.getElementById('add-phone').value.trim(),
+        status: 'Còn hoạt động',
+        year: new Date().getFullYear(),
+        revenue: document.getElementById('add-revenue').value.trim() || '0 Đ'
+    };
+    projects.push(newP);
+    localStorage.setItem('db_projects', JSON.stringify(projects));
     
-    saveToStorage();
-    document.getElementById('content-frame').contentWindow.location.reload();
-    return true;
-}
+    const shtt = JSON.parse(localStorage.getItem('db_shtt')) || [];
+    shtt.push({ id: newP.id, projectName: newP.name, type: "SC", name: `Giải pháp uơm tạo ${newP.name}`, docNum: "-", docDate: "-", certNum: "-", certDate: "-", state: "CNĐ/TĐHT", source: "VU" });
+    localStorage.setItem('db_shtt', JSON.stringify(shtt));
 
-function addNewShttData(newShtt) {
-    const foundProj = db_projects.find(p => p.id === newShtt.id);
-    if (!foundProj) { alert("Mã dự án không tồn tại!"); return false; }
-    newShtt.projectName = foundProj.name;
-    db_shtt.push(newShtt);
-    saveToStorage();
-    document.getElementById('content-frame').contentWindow.location.reload();
-    return true;
-}
+    const certs = JSON.parse(localStorage.getItem('db_certs')) || [];
+    certs.push({ id: newP.id, companyName: newP.company, type: "DN Khoa học & Công nghệ", state: "Chưa nộp đơn", note: "Khởi tạo" });
+    localStorage.setItem('db_certs', JSON.stringify(certs));
 
-function addNewCertData(newCert) {
-    const foundProj = db_projects.find(p => p.id === newCert.id);
-    if (!foundProj) { alert("Mã dự án không tồn tại!"); return false; }
-    newCert.companyName = foundProj.company;
-    db_certs.push(newCert);
-    saveToStorage();
+    toggleModal('project-modal');
     document.getElementById('content-frame').contentWindow.location.reload();
-    return true;
 }

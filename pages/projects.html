@@ -2,103 +2,81 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Danh Mục Dự Án - SHTP-IC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     </style>
 </head>
-<body class="p-3 bg-slate-50 text-xs text-gray-700 custom-scrollbar">
+<body class="bg-white text-xs text-gray-700 p-2 sm:p-4">
 
-    <div class="flex flex-col lg:flex-row gap-4 w-full h-[92vh] overflow-hidden">
+    <div class="flex flex-col lg:flex-row gap-4 h-full lg:h-[86vh] overflow-hidden">
         
-        <div id="left-panel" class="w-full flex flex-col bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all duration-300 overflow-hidden">
-            <div class="flex justify-between items-center mb-3">
-                <h2 class="font-bold text-gray-800 text-sm flex items-center"><i class="fa-solid fa-folder-tree mr-2 text-indigo-900"></i>Danh mục dự án</h2>
-                <button onclick="window.parent.toggleModal('project-modal')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3 py-1.5 rounded-xl flex items-center text-[11px]"><i class="fa-solid fa-plus mr-1"></i>Thêm mới</button>
-            </div>
-            
-            <div id="filter-area" class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
-                <input type="text" id="s-name" oninput="render()" placeholder="Tìm kiếm nhanh..." class="border border-slate-200 rounded-xl p-2 bg-slate-50 focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                <select id="f-sec" onchange="render()" class="border border-slate-200 rounded-xl p-2 bg-white"><option value="All">Tất cả lĩnh vực</option><option value="IoT">IoT</option><option value="AI">AI</option><option value="Công nghệ số">Công nghệ số</option><option value="Sinh học">Sinh học</option></select>
-                <select id="f-stat" onchange="render()" class="border border-slate-200 rounded-xl p-2 bg-white"><option value="All">Tất cả trạng thái</option><option value="Còn hoạt động">Còn hoạt động</option><option value="Tạm ngừng">Tạm ngừng</option></select>
+        <div id="left-panel" class="w-full flex flex-col border border-slate-200 rounded-2xl p-4 transition-all duration-300 bg-white shadow-sm shrink-0">
+            <div id="filter-area" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mb-4">
+                <input type="text" id="search" oninput="render()" placeholder="Tìm tên, doanh nghiệp..." class="border border-slate-200 rounded-xl p-2.5 bg-slate-50 outline-none focus:border-blue-500 text-xs">
+                <select id="f-sec" onchange="render()" class="border border-slate-200 rounded-xl p-2 bg-white outline-none text-xs"><option value="All">Tất cả lĩnh vực</option><option value="IoT">IoT</option><option value="AI">AI</option><option value="Công nghệ số">Công nghệ số</option><option value="Sinh học">Sinh học</option></select>
+                <select id="f-stat" onchange="render()" class="border border-slate-200 rounded-xl p-2 bg-white outline-none text-xs"><option value="All">Tất cả hiện trạng</option><option value="Còn hoạt động">Còn hoạt động</option><option value="Tạm ngừng">Tạm ngừng</option></select>
             </div>
 
-            <div class="overflow-auto flex-grow border border-slate-100 rounded-xl">
-                <table class="w-full text-left min-w-[400px]">
+            <div class="overflow-auto flex-grow rounded-xl border border-slate-200">
+                <table class="w-full text-left text-xs min-w-[500px]">
                     <thead class="bg-slate-900 text-white text-[10px] uppercase sticky top-0 z-10">
                         <tr>
-                            <th class="p-2.5 text-center w-12">STT</th>
-                            <th class="p-2.5">Tên dự án</th>
-                            <th id="th-sec" class="p-2.5">Lĩnh vực</th>
-                            <th id="th-stat" class="p-2.5 text-center">Trạng thái</th>
+                            <th class="p-3 text-center w-12">STT</th>
+                            <th class="p-3">Tên Dự án</th>
+                            <th class="p-3">Doanh nghiệp chủ quản</th>
+                            <th id="th-manager" class="p-3">Người quản lý</th>
+                            <th id="th-sec" class="p-3">Lĩnh vực</th>
+                            <th id="th-stat" class="p-3 text-center w-24">Trạng thái</th>
                         </tr>
                     </thead>
-                    <tbody id="tbody" class="divide-y divide-slate-100"></tbody>
+                    <tbody id="tbody" class="divide-y divide-slate-100 bg-white"></tbody>
                 </table>
             </div>
         </div>
 
-        <div id="right-panel" class="hidden w-full lg:w-2/3 flex-col bg-white rounded-2xl shadow-sm border border-slate-100 p-5 overflow-y-auto custom-scrollbar">
+        <div id="right-panel" class="hidden w-full lg:w-2/3 flex-col border border-slate-200 rounded-2xl p-4 sm:p-6 overflow-y-auto bg-white shadow-md animate-fade-in">
             <div class="flex justify-between items-start border-b border-slate-100 pb-4 mb-4">
-                <div class="flex items-center space-x-4">
-                    <div class="w-14 h-14 bg-indigo-50 rounded-xl border border-indigo-100 flex items-center justify-center p-2 font-black text-indigo-700 text-center text-xs">SHTP IC</div>
-                    <div>
-                        <h2 id="d-name" class="text-base font-bold text-slate-800"></h2>
-                        <p id="d-company" class="text-xs text-slate-400 font-medium"></p>
-                        <div class="flex flex-wrap gap-2 mt-1.5">
-                            <span id="d-sector" class="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded font-medium text-[10px]"></span>
-                            <span id="d-status" class="px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded font-medium text-[10px]"></span>
-                            <span id="d-contract" class="px-2 py-0.5 bg-slate-100 text-slate-500 rounded text-[10px]"></span>
-                        </div>
+                <div>
+                    <h2 id="d-name" class="text-sm sm:text-base font-black text-slate-800"></h2>
+                    <p id="d-company" class="text-xs font-bold text-blue-600 mt-0.5"></p>
+                    <div class="flex flex-wrap gap-1.5 mt-2">
+                        <span id="d-sector" class="px-2 py-0.5 bg-blue-50 text-blue-600 rounded font-bold text-[9px]"></span>
+                        <span id="d-status" class="px-2 py-0.5 rounded font-bold text-[9px]"></span>
+                        <span id="d-contract" class="px-2 py-0.5 bg-slate-100 text-slate-500 rounded text-[9px]"></span>
                     </div>
                 </div>
-                <button onclick="closeDetails()" class="text-slate-400 hover:text-slate-600 text-xl p-1 leading-none">&times;</button>
+                <button onclick="closeDetails()" class="text-slate-400 hover:text-slate-600 text-2xl p-1 leading-none">&times;</button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-slate-50/50 p-4 rounded-xl border border-slate-100">
-                    <h3 class="font-bold text-slate-700 mb-2 flex items-center"><i class="fa-solid fa-file-lines mr-2 text-indigo-600"></i>1. Giới thiệu dự án</h3>
-                    <p id="d-intro" class="text-gray-500 leading-relaxed text-justify"></p>
-                </div>
-                <div class="bg-slate-50/50 p-4 rounded-xl border border-slate-100 flex flex-col justify-between">
-                    <div>
-                        <h3 class="font-bold text-slate-700 mb-2 flex items-center"><i class="fa-solid fa-cubes mr-2 text-indigo-600"></i>2. Giới thiệu sản phẩm</h3>
-                        <p id="d-product" class="text-gray-500 leading-relaxed text-justify mb-3"></p>
-                    </div>
-                    <div id="d-image-placeholder" class="h-24 bg-slate-200 rounded-lg flex items-center justify-center text-slate-400 font-medium italic"><i class="fa-solid fa-image mr-2"></i>Hình ảnh mô phỏng hệ sinh thái sản phẩm</div>
-                </div>
-            </div>
-
-            <div class="mt-4 bg-slate-50/50 p-4 rounded-xl border border-slate-100">
-                <h3 class="font-bold text-slate-700 mb-3 flex items-center"><i class="fa-solid fa-handshake-angle mr-2 text-indigo-600"></i>3. Các nội dung đã hỗ trợ trong chương trình ươm tạo</h3>
-                <div id="support-tags" class="flex flex-wrap gap-2"></div>
-            </div>
-
-            <div class="mt-4">
-                <h3 class="font-bold text-slate-700 mb-3 flex items-center"><i class="fa-solid fa-square-poll-vertical mr-2 text-indigo-600"></i>4. Kết quả hoạt động</h3>
-                <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center mb-4">
-                    <div class="bg-slate-50 border border-slate-100 p-2 rounded-lg"><p class="text-[10px] font-bold text-slate-400">Thành viên</p><span id="m-members" class="text-xs font-bold text-slate-700"></span></div>
-                    <div class="bg-slate-50 border border-slate-100 p-2 rounded-lg"><p class="text-[10px] font-bold text-slate-400">Khách hàng</p><span id="m-partners" class="text-xs font-bold text-slate-700"></span></div>
-                    <div class="bg-slate-50 border border-slate-100 p-2 rounded-lg"><p class="text-[10px] font-bold text-slate-400">Doanh thu</p><span id="m-rev" class="text-xs font-bold text-green-600"></span></div>
-                    <div class="bg-slate-50 border border-slate-100 p-2 rounded-lg"><p class="text-[10px] font-bold text-slate-400">Kêu gọi vốn</p><span id="m-funding" class="text-xs font-bold text-blue-600"></span></div>
-                    <div class="bg-slate-50 border border-slate-100 p-2 rounded-lg"><p class="text-[10px] font-bold text-slate-400">Sản phẩm TMH</p><span id="m-prod" class="text-xs font-bold text-amber-600"></span></div>
+            <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100"><h3 class="font-bold text-slate-700 mb-1.5 flex items-center text-blue-600"><i class="fa-solid fa-file-invoice mr-1.5"></i>1. Giới thiệu dự án</h3><p id="d-intro" class="text-slate-500 leading-relaxed text-justify text-[11px]"></p></div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100"><h3 class="font-bold text-slate-700 mb-1.5 flex items-center text-blue-600"><i class="fa-solid fa-box-open mr-1.5"></i>2. Giới thiệu sản phẩm</h3><p id="d-product" class="text-slate-500 leading-relaxed text-justify text-[11px]"></p></div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-slate-100 pt-4">
-                    <div>
-                        <h4 class="font-bold text-slate-600 mb-1.5">Mạng lưới đối tác</h4>
-                        <ul id="d-partners-vn" class="list-disc list-inside text-gray-500 space-y-1"></ul>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                    <h3 class="font-bold text-slate-700 mb-2 flex items-center text-blue-600"><i class="fa-solid fa-handshake-angle mr-1.5"></i>3. Các nội dung đã hỗ trợ trong chương trình ươm tạo</h3>
+                    <div id="support-tags" class="flex flex-wrap gap-1.5"></div>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-700 mb-2 flex items-center text-blue-600"><i class="fa-solid fa-square-poll-vertical mr-1.5"></i>4. Kết quả hoạt động</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center font-bold mb-4">
+                        <div class="bg-slate-50 p-2 rounded-xl border border-slate-100"><p class="text-[8px] text-slate-400 uppercase">Thành viên</p><span id="m-members" class="text-slate-700 text-xs"></span></div>
+                        <div class="bg-slate-50 p-2 rounded-xl border border-slate-100"><p class="text-[8px] text-slate-400 uppercase">Đối tác</p><span id="m-partners" class="text-slate-700 text-xs"></span></div>
+                        <div class="bg-slate-50 p-2 rounded-xl border border-slate-100"><p class="text-[8px] text-slate-400 uppercase">Doanh thu</p><span id="m-rev" class="text-emerald-600 text-xs"></span></div>
+                        <div class="bg-slate-50 p-2 rounded-xl border border-slate-100"><p class="text-[8px] text-slate-400 uppercase">Gọi vốn</p><span id="m-funding" class="text-blue-600 text-xs"></span></div>
+                        <div class="bg-slate-50 p-2 rounded-xl border border-slate-100"><p class="text-[8px] text-slate-400 uppercase">Sản phẩm</p><span id="m-prod" class="text-orange-500 text-xs"></span></div>
                     </div>
-                    <div>
-                        <h4 class="font-bold text-slate-600 mb-1.5">Hoạt động nổi bật</h4>
-                        <ul id="d-highlights" class="list-none text-gray-500 space-y-1"></ul>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-slate-600 mb-1.5">Giải thưởng đạt được</h4>
-                        <ul id="d-awards" class="list-none text-gray-500 space-y-1"></ul>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-slate-100 pt-3">
+                        <div><h4 class="font-bold text-slate-700 mb-1.5 text-[11px] uppercase">Mạng lưới đối tác</h4><ul id="d-partners" class="list-disc list-inside text-slate-500 space-y-0.5 text-[11px]"></ul></div>
+                        <div><h4 class="font-bold text-slate-700 mb-1.5 text-[11px] uppercase">Hoạt động nổi bật</h4><ul id="d-highlights" class="space-y-1"></ul></div>
+                        <div><h4 class="font-bold text-slate-700 mb-1.5 text-[11px] uppercase">Giải thưởng</h4><ul id="d-awards" class="space-y-0.5 text-[11px]"></ul></div>
                     </div>
                 </div>
             </div>
@@ -106,248 +84,77 @@
     </div>
 
     <script>
-        // Lấy dữ liệu an toàn từ kho lưu trữ bền vững
         const db_projects = JSON.parse(localStorage.getItem('db_projects')) || [];
+        const statusColors = { "Còn hoạt động": "bg-emerald-50 text-emerald-700 border border-emerald-100", "Tạm ngừng": "bg-amber-50 text-amber-700 border border-amber-100", "Ngưng hoạt động": "bg-rose-50 text-rose-700 border border-rose-100" };
 
         function render() {
-            const sName = document.getElementById('s-name').value.toLowerCase().trim();
+            const query = document.getElementById('search').value.toLowerCase().trim();
             const sec = document.getElementById('f-sec').value;
             const stat = document.getElementById('f-stat').value;
-
-            let filtered = db_projects.filter(p => {
-                const nameMatch = p.name ? p.name.toLowerCase().includes(sName) : false;
-                const compMatch = p.company ? p.company.toLowerCase().includes(sName) : false;
-                const sectorMatch = (sec === 'All' || (p.sector && p.sector.includes(sec)));
-                const statusMatch = (stat === 'All' || p.status === stat);
-                return (nameMatch || compMatch) && sectorMatch && statusMatch;
-            });
+            let filtered = db_projects.filter(p => (p.name.toLowerCase().includes(query) || p.company.toLowerCase().includes(query)) && (sec === 'All' || p.sector.includes(sec)) && (stat === 'All' || p.status === stat));
 
             let count = 1;
             document.getElementById('tbody').innerHTML = filtered.map(p => `
-                <tr onclick="showDetails('${p.id}')" class="hover:bg-indigo-50/60 cursor-pointer transition-all">
-                    <td class="p-2.5 font-bold text-center text-slate-400">${count++}</td>
-                    <td class="p-2.5 font-semibold text-slate-800">${p.name || '-'}</td>
-                    <td class="td-sec-col p-2.5 text-slate-500">${p.sector || '-'}</td>
-                    <td class="td-stat-col p-2.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-bold ${p.status === 'Còn hoạt động' ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600'}">${p.status || '-'}</span></td>
+                <tr onclick="showDetails('${p.id}')" class="hover:bg-slate-50 cursor-pointer transition-all">
+                    <td class="p-3 font-bold text-center text-slate-400">${count++}</td>
+                    <td class="p-3 font-bold text-slate-800">${p.name}</td>
+                    <td class="p-3 font-medium text-slate-500">${p.company}</td>
+                    <td class="td-hidable p-3 text-slate-400">${p.manager || '-'}</td>
+                    <td class="td-hidable p-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-600 rounded font-bold text-[9px]">${p.sector}</span></td>
+                    <td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${statusColors[p.status] || 'bg-slate-100'}">${p.status}</span></td>
                 </tr>
             `).join('');
         }
 
         function showDetails(id) {
-            const p = db_projects.find(proj => proj.id === id);
+            const p = db_projects.find(item => item.id === id);
             if(!p) return;
 
-            // 1. CHUYỂN ĐỔI PHÂN PHỐI LƯỚI AN TOÀN (Sửa lỗi crash Tailwind gán element)
-            document.getElementById('left-panel').style.width = (window.innerWidth >= 1024) ? "33.333333%" : "100%";
-            document.getElementById('filter-area').style.display = "none";
-            
-            // 2. ẨN CÁC CỘT PHỤ BẰNG CÁCH DUYỆT ID CHI TIẾT (Tránh lỗi null classList)
-            if(document.getElementById('th-sec')) document.getElementById('th-sec').style.display = "none";
-            if(document.getElementById('th-stat')) document.getElementById('th-stat').style.display = "none";
-            
-            document.querySelectorAll('.td-sec-col').forEach(el => el.style.display = "none");
-            document.querySelectorAll('.td-stat-col').forEach(el => el.style.display = "none");
-
-            // Hiển thị tấm nền chi tiết bên phải
-            const rightPanel = document.getElementById('right-panel');
-            rightPanel.style.display = "flex";
-
-            // 3. ĐỔ DỮ LIỆU ĐỘNG & BẢO VỆ BIẾN TRÁI TRƯỜNG KHUYẾT THÔNG TIN
-            document.getElementById('d-name').innerText = p.name || '-';
-            document.getElementById('d-company').innerText = p.company || '-';
-            document.getElementById('d-sector').innerText = p.sector || '-';
-            document.getElementById('d-status').innerText = p.status || '-';
-            document.getElementById('d-contract').innerText = `${p.contract || 'Chưa có HĐ'} (${p.contractDate || 'Đang cập nhật'})`;
-            document.getElementById('d-intro').innerText = p.intro || "Thông tin tổng quan đang được bổ sung...";
-
-            // Khối xử lý Co giãn Sản phẩm
-            if (!p.product) {
-                document.getElementById('d-product').innerText = "Dự án hiện đang trong giai đoạn R&D. Hệ thống sản phẩm thương mại hóa chưa được công bố.";
-                document.getElementById('d-image-placeholder').style.display = "none";
+            // Xử lý ẩn/hiện panel theo độ rộng thiết bị động thời gian thực
+            if (window.innerWidth >= 1024) {
+                document.getElementById('left-panel').className = "w-1/3 flex flex-col border border-slate-200 rounded-2xl p-4 transition-all duration-300 bg-white shadow-sm shrink-0";
+                if(document.getElementById('th-manager')) document.getElementById('th-manager').style.display = "none";
+                if(document.getElementById('th-sec')) document.getElementById('th-sec').style.display = "none";
+                document.querySelectorAll('.td-hidable').forEach(el => el.style.display = "none");
             } else {
-                document.getElementById('d-product').innerText = p.product;
-                document.getElementById('d-image-placeholder').style.display = "flex";
+                document.getElementById('left-panel').style.display = "none"; // Trên Mobile thì ẩn hẳn bảng để nhường chỗ xem chi tiết
             }
 
-            // Khối xử lý nội dung hỗ trợ (Empty State)
-            const supportContainer = document.getElementById('support-tags');
-            if (!p.supports || p.supports.length === 0) {
-                supportContainer.innerHTML = `
-                    <div class="w-full p-3 border border-dashed border-slate-200 rounded-xl text-center text-slate-400 bg-slate-50 italic flex items-center justify-center">
-                        <i class="fa-solid fa-circle-info mr-2 text-indigo-400"></i> Dự án mới tham gia chương trình. Chưa phát sinh lịch sử ghi nhận hỗ trợ.
-                    </div>`;
-            } else {
-                supportContainer.innerHTML = p.supports.map(s => `
-                    <span class="px-2.5 py-1 bg-indigo-50 border border-indigo-100 text-indigo-700 font-bold rounded-xl text-[10px] flex items-center"><i class="fa-solid fa-circle-check mr-1 text-emerald-500"></i>${s}</span>
-                `).join('');
-            }
+            document.getElementById('right-panel').style.display = "flex";
 
-            // Khối KPIs kết quả hoạt động
-            const m = p.metrics || { members: "-", partners: 0, revenue: "0 Đ", funding: "0 Đ", products: 0 };
-            document.getElementById('m-members').innerText = typeof m.members === 'number' ? `${m.members} người` : m.members;
-            document.getElementById('m-partners').innerText = m.partners ? `${m.partners}+ đối tác` : "0 đối tác";
+            // Bơm dữ liệu uơm tạo 360 độ
+            document.getElementById('d-name').innerText = p.name;
+            document.getElementById('d-company').innerText = p.company;
+            document.getElementById('d-sector').innerText = p.sector;
+            document.getElementById('d-contract').innerText = `${p.contract || 'HĐ số 07/HĐUT-VUDN'} (${p.contractDate || '2024-2026'})`;
+            document.getElementById('d-intro').innerText = p.intro || 'Thông tin giới thiệu tổng quan của doanh nghiệp đang được cập nhật.';
+            document.getElementById('d-product').innerText = p.product || 'Hệ thống giải pháp công nghệ kĩ thuật và sản phẩm cốt lõi của dự án.';
+            document.getElementById('d-status').innerText = p.status;
+            document.getElementById('d-status').className = `px-2 py-0.5 rounded font-bold text-[9px] ${statusColors[p.status]}`;
+
+            const supports = p.supports || ["Tư vấn mô hình kinh doanh", "Hỗ trợ bảo hộ SHTT", "Kêu gọi vốn đầu tư"];
+            document.getElementById('support-tags').innerHTML = supports.map(s => `<span class="px-2 py-1 bg-blue-50 border border-blue-200 text-blue-600 font-bold rounded-xl text-[10px]"><i class="fa-solid fa-circle-check mr-1 text-emerald-500"></i>${s}</span>`).join('');
+
+            const m = p.metrics || { members: 5, partners: 0, revenue: p.revenue || "0 Đ", funding: "0 Đ", products: 0 };
+            document.getElementById('m-members').innerText = `${m.members} người`;
+            document.getElementById('m-partners').innerText = `${m.partners}+ ĐT`;
             document.getElementById('m-rev').innerText = m.revenue;
             document.getElementById('m-funding').innerText = m.funding;
             document.getElementById('m-prod').innerText = `${m.products} SP`;
 
-            // Khối Đối tác - Sự kiện - Giải thưởng
-            document.getElementById('d-partners-vn').innerHTML = (!p.partners_vn || p.partners_vn.length === 0) 
-                ? `<span class="text-slate-400 italic text-[11px]">Chưa ghi nhận đối tác</span>` 
-                : p.partners_vn.map(item => `<li>${item}</li>`).join('');
-
-            document.getElementById('d-highlights').innerHTML = (!p.highlights || p.highlights.length === 0)
-                ? `<span class="text-slate-400 italic text-[11px]">Chưa có sự kiện nổi bật</span>`
-                : p.highlights.map(h => `<li class="flex items-start space-x-1.5 mb-1"><span class="bg-indigo-100 text-indigo-700 px-1 rounded text-[9px] font-bold">${h.date}</span> <span class="text-xs text-gray-600">${h.text}</span></li>`).join('');
-
-            document.getElementById('d-awards').innerHTML = (!p.awards || p.awards.length === 0)
-                ? `<span class="text-slate-400 italic text-[11px] flex items-center"><i class="fa-solid fa-award mr-1 text-slate-300"></i>Chưa có giải thưởng</span>`
-                : p.awards.map(a => `<li class="flex items-center text-amber-600 font-medium mb-1"><i class="fa-solid fa-trophy mr-1 text-[10px] text-amber-500"></i>${a}</li>`).join('');
+            document.getElementById('d-partners').innerHTML = (p.partners_vn || ["Đang cập nhật mạng lưới đối tác thương mại hóa"]).map(item => `<li>${item}</li>`).join('');
+            document.getElementById('d-highlights').innerHTML = (p.highlights || [{date:"2026", text:"Gia nhập hệ thống uơm tạo SHTP-IC"}]).map(h => `<li class="flex items-center space-x-2 text-[11px] mb-1"><span class="bg-blue-100 text-blue-700 px-1 rounded text-[9px] font-mono font-bold">${h.date}</span><span>${h.text}</span></li>`).join('');
+            document.getElementById('d-awards').innerHTML = (p.awards || ["Chưa ghi nhận danh hiệu giải thưởng"]).map(a => `<li class="text-amber-600 font-medium"><i class="fa-solid fa-trophy mr-1.5 text-amber-500"></i>${a}</li>`).join('');
         }
 
         function closeDetails() {
-            // Khôi phục lại trạng thái ban đầu của bảng trái
-            document.getElementById('left-panel').style.width = "100%";
-            document.getElementById('filter-area').style.display = "grid";
-            
-            if(document.getElementById('th-sec')) document.getElementById('th-sec').style.style.display = "";
-            if(document.getElementById('th-stat')) document.getElementById('th-stat').style.style.display = "";
-            
-            document.querySelectorAll('.td-sec-col').forEach(el => el.style.display = "");
-            document.querySelectorAll('.td-stat-col').forEach(el => el.style.display = "");
-            
+            document.getElementById('left-panel').style.display = "flex";
+            document.getElementById('left-panel').className = "w-full flex flex-col border border-slate-200 rounded-2xl p-4 transition-all duration-300 bg-white shadow-sm shrink-0";
+            if(document.getElementById('th-manager')) document.getElementById('th-manager').style.display = "";
+            if(document.getElementById('th-sec')) document.getElementById('th-sec').style.display = "";
+            document.querySelectorAll('.td-hidable').forEach(el => el.style.display = "");
             document.getElementById('right-panel').style.display = "none";
         }
-
-        // =================================================================
-        // HÀM BỔ TRỢ: CHUYỂN ĐỔI CHUỖI DOANH THU BẤT KỲ VỀ DẠNG SỐ (NUMBER)
-        // =================================================================
-        function parseRevenueToNumber(revStr) {
-            if (!revStr) return 0;
-            
-            // Chuyển về chữ thường, xóa khoảng trắng và bỏ chữ "đ", "vnd", "đồng" ở cuối nếu có
-            let str = revStr.toString().toLowerCase().trim()
-                        .replace(/đ/g, '').replace(/vnd/g, '').replace(/đồng/g, '').trim();
-            
-            let multiplier = 1; // Hệ số nhân mặc định
-
-            // Kiểm tra nếu chứa chữ "tỷ" hoặc "ty"
-            if (str.includes('tỷ') || str.includes('ty')) {
-                multiplier = 1000000000;
-                str = str.replace(/tỷ/g, '').replace(/ty/g, '').trim();
-            } 
-            // Kiểm tra nếu chứa chữ "triệu" hoặc "trieu" hoặc "tr"
-            else if (str.includes('triệu') || str.includes('trieu') || str.includes('tr')) {
-                multiplier = 1000000;
-                str = str.replace(/triệu/g, '').replace(/trieu/g, '').replace(/tr/g, '').trim();
-            }
-
-            // Xử lý dấu phân cách nghìn (chuyển dấu chấm thành rỗng nếu chuỗi định dạng kiểu 200.000)
-            // Nhưng phải cẩn thận với số thập phân kiểu "5.2 tỷ" -> dấu chấm lúc này là phân cách thập phân
-            if (multiplier === 1) {
-                // Chuỗi dạng "200.000" hoặc "200,000" -> xóa hết dấu phân cách để thành "200000"
-                str = str.replace(/\./g, '').replace(/,/g, '');
-            } else {
-                // Chuỗi dạng "5.2" hoặc "5,2" -> đổi dấu phẩy thành dấu chấm để parseFloat hiểu là số thập phân
-                str = str.replace(/,/g, '.');
-            }
-
-            let num = parseFloat(str);
-            return isNaN(num) ? 0 : num * multiplier;
-        }
-
-        // =================================================================
-        // HÀM BỔ TRỢ: ĐỊNH DẠNG LẠI SỐ ĐỂ HIỂN THỊ ĐẸP TRÊN GIAO DIỆN
-        // =================================================================
-        function formatRevenueToString(num) {
-            if (num === 0 || isNaN(num)) return "0 Đ";
-            
-            if (num >= 1000000000) {
-                return (num / 1000000000).toFixed(1).replace(/\.0$/, '') + " tỷ VNĐ";
-            }
-            if (num >= 1000000) {
-                return (num / 1000000).toFixed(1).replace(/\.0$/, '') + " triệu VNĐ";
-            }
-            return num.toLocaleString('vi-VN') + " Đ";
-        }
-
-        // =================================================================
-        // CẬP NHẬT HÀM SHOW DETAILS ĐỂ ĐIỀU CHỈNH KHỐI 4 (KẾT QUẢ HOẠT ĐỘNG)
-        // =================================================================
-        function showDetails(id) {
-            const p = db_projects.find(proj => proj.id === id);
-            if(!p) return;
-
-            // 1. Chuyển đổi phân phối lưới an toàn
-            document.getElementById('left-panel').style.width = (window.innerWidth >= 1024) ? "33.333333%" : "100%";
-            document.getElementById('filter-area').style.display = "none";
-            
-            if(document.getElementById('th-sec')) document.getElementById('th-sec').style.display = "none";
-            if(document.getElementById('th-stat')) document.getElementById('th-stat').style.display = "none";
-            
-            document.querySelectorAll('.td-sec-col').forEach(el => el.style.display = "none");
-            document.querySelectorAll('.td-stat-col').forEach(el => el.style.display = "none");
-
-            const rightPanel = document.getElementById('right-panel');
-            rightPanel.style.display = "flex";
-
-            // 2. Điền thông tin cơ bản
-            document.getElementById('d-name').innerText = p.name || '-';
-            document.getElementById('d-company').innerText = p.company || '-';
-            document.getElementById('d-sector').innerText = p.sector || '-';
-            document.getElementById('d-status').innerText = p.status || '-';
-            document.getElementById('d-contract').innerText = `${p.contract || 'Chưa có HĐ'} (${p.contractDate || 'Đang cập nhật'})`;
-            document.getElementById('d-intro').innerText = p.intro || "Thông tin tổng quan đang được bổ sung...";
-
-            // Khối xử lý Sản phẩm
-            if (!p.product) {
-                document.getElementById('d-product').innerText = "Dự án hiện đang trong giai đoạn R&D. Hệ thống sản phẩm thương mại hóa chưa được công bố.";
-                document.getElementById('d-image-placeholder').style.display = "none";
-            } else {
-                document.getElementById('d-product').innerText = p.product;
-                document.getElementById('d-image-placeholder').style.display = "flex";
-            }
-
-            // Khối xử lý nội dung hỗ trợ
-            const supportContainer = document.getElementById('support-tags');
-            if (!p.supports || p.supports.length === 0) {
-                supportContainer.innerHTML = `
-                    <div class="w-full p-3 border border-dashed border-slate-200 rounded-xl text-center text-slate-400 bg-slate-50 italic flex items-center justify-center">
-                        <i class="fa-solid fa-circle-info mr-2 text-indigo-400"></i> Dự án mới tham gia chương trình. Chưa phát sinh lịch sử ghi nhận hỗ trợ.
-                    </div>`;
-            } else {
-                supportContainer.innerHTML = p.supports.map(s => `
-                    <span class="px-2.5 py-1 bg-indigo-50 border border-indigo-100 text-indigo-700 font-bold rounded-xl text-[10px] flex items-center"><i class="fa-solid fa-circle-check mr-1 text-emerald-500"></i>${s}</span>
-                `).join('');
-            }
-
-            // --- XỬ LÝ ĐỒNG BỘ DOANH THU & GỌI VỐN BẰNG BỘ PARSER AN TOÀN ---
-            const m = p.metrics || { members: "-", partners: 0, revenue: "0 Đ", funding: "0 Đ", products: 0 };
-            
-            // Tính toán chuẩn hóa
-            let rawRevenueNum = parseRevenueToNumber(m.revenue);
-            let rawFundingNum = parseRevenueToNumber(m.funding);
-
-            // Bơm giá trị đã được chuẩn hóa đẹp đẽ lên giao diện
-            document.getElementById('m-members').innerText = typeof m.members === 'number' ? `${m.members} người` : m.members;
-            document.getElementById('m-partners').innerText = m.partners ? `${m.partners}+ đối tác` : "0 đối tác";
-            document.getElementById('m-rev').innerText = formatRevenueToString(rawRevenueNum);
-            document.getElementById('m-funding').innerText = formatRevenueToString(rawFundingNum);
-            document.getElementById('m-prod').innerText = `${m.products} SP`;
-
-            // Đối tác - Sự kiện - Giải thưởng
-            document.getElementById('d-partners-vn').innerHTML = (!p.partners_vn || p.partners_vn.length === 0) 
-                ? `<span class="text-slate-400 italic text-[11px]">Chưa ghi nhận đối tác</span>` 
-                : p.partners_vn.map(item => `<li>${item}</li>`).join('');
-
-            document.getElementById('d-highlights').innerHTML = (!p.highlights || p.highlights.length === 0)
-                ? `<span class="text-slate-400 italic text-[11px]">Chưa có sự kiện nổi bật</span>`
-                : p.highlights.map(h => `<li class="flex items-start space-x-1.5 mb-1"><span class="bg-indigo-100 text-indigo-700 px-1 rounded text-[9px] font-bold">${h.date}</span> <span class="text-xs text-gray-600">${h.text}</span></li>`).join('');
-
-            document.getElementById('d-awards').innerHTML = (!p.awards || p.awards.length === 0)
-                ? `<span class="text-slate-400 italic text-[11px] flex items-center"><i class="fa-solid fa-award mr-1 text-slate-300"></i>Chưa có giải thưởng</span>`
-                : p.awards.map(a => `<li class="flex items-center text-amber-600 font-medium mb-1"><i class="fa-solid fa-trophy mr-1 text-[10px] text-amber-500"></i>${a}</li>`).join('');
-        }
-
         window.onload = render;
     </script>
 </body>

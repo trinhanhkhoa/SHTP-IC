@@ -2,113 +2,58 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="p-3 sm:p-5 bg-white text-xs sm:text-sm text-gray-800">
-    <div class="space-y-4">
-        <div class="flex justify-between items-center flex-wrap gap-2">
-            <h2 class="font-bold text-gray-700 uppercase tracking-wider text-xs"><i class="fa-solid fa-award mr-1 text-indigo-900"></i>Sheet 4: Doanh Nghiệp KH&CN & Tiêu Chuẩn</h2>
-            <button onclick="toggleModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-sm"><i class="fa-solid fa-plus mr-1"></i>Ghi Nhận Chứng Chỉ</button>
-        </div>
+<body class="bg-white text-xs text-gray-700 p-2 sm:p-4">
+    <div class="space-y-4 border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm">
         
-        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
-            <input type="text" id="s-title" oninput="render()" placeholder="Tìm kiếm theo công ty..." class="border border-gray-200 rounded-xl p-2 text-xs bg-white focus:outline-none">
-            <select id="f-type" onchange="render()" class="border border-gray-200 rounded-xl p-2 text-xs bg-white"><option value="All">Tất cả loại chứng nhận</option><option value="DN Khoa học & Công nghệ">DN Khoa học & Công nghệ</option><option value="ISO">ISO</option><option value="TCCS">TCCS</option></select>
-            <select id="f-state" onchange="render()" class="border border-gray-200 rounded-xl p-2 text-xs bg-white"><option value="All">Tất cả trạng thái</option><option value="Chưa nộp đơn">Chưa nộp đơn</option><option value="Đã nộp đơn">Đã nộp đơn</option><option value="Đã cấp giấy">Đã cấp giấy</option></select>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <input type="text" id="search" oninput="render()" placeholder="Lọc theo công ty..." class="border border-slate-200 rounded-xl p-2.5 bg-slate-50 outline-none text-xs focus:border-blue-500">
+            <select id="f-state" onchange="render()" class="border border-slate-200 rounded-xl p-2.5 bg-white outline-none text-xs"><option value="All">Tất cả hiện trạng duyệt</option><option value="Chưa nộp đơn">Chưa nộp đơn</option><option value="Đã nộp đơn">Đã nộp đơn</option><option value="Đã cấp giấy">Đã cấp giấy</option></select>
         </div>
 
-        <div class="border border-gray-100 rounded-xl overflow-hidden overflow-x-auto shadow-sm">
-            <table class="w-full text-left min-w-[650px]">
-                <thead class="bg-indigo-900 text-white text-[11px] uppercase">
-                    <tr>
-                        <th class="p-3 text-center w-12">STT</th>
-                        <th class="p-3">Tên công ty chủ quản dự án</th>
-                        <th class="p-3">Loại chứng chỉ / Tiêu chuẩn</th>
-                        <th class="p-3 text-center">Trạng thái thẩm định</th>
-                        <th class="p-3">Số chứng nhận / Ghi chú</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody" class="divide-y divide-gray-100"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <div id="local-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden">
-            <div class="bg-indigo-900 text-white p-4 flex justify-between items-center"><h3 class="font-bold text-xs">GHI NHẬN CHỨNG CHỈ</h3><button onclick="toggleModal()" class="text-xl">&times;</button></div>
-            <form onsubmit="submitForm(event)" class="p-4 space-y-3 text-xs">
-                <div class="flex flex-col"><label class="font-bold text-gray-500 mb-1">MÃ DỰ ÁN CHỦ QUẢN *</label><input type="text" id="add-id" placeholder="VD: DA001" required class="border p-2 rounded-xl focus:outline-none"></div>
-                <div class="flex flex-col"><label class="font-bold text-gray-500 mb-1">LOẠI CHỨNG NHẬN</label><select id="add-type" class="border p-2 rounded-xl"><option value="DN Khoa học & Công nghệ">DN Khoa học & Công nghệ</option><option value="ISO">ISO</option><option value="TCCS">TCCS</option></select></div>
-                <div class="flex flex-col"><label class="font-bold text-gray-500 mb-1">TRẠNG THÁI</label><select id="add-state" class="border p-2 rounded-xl"><option value="Chưa nộp đơn">Chưa nộp đơn</option><option value="Đã nộp đơn">Đã nộp đơn</option><option value="Đã cấp giấy">Đã cấp giấy</option></select></div>
-                <div class="flex flex-col"><label class="font-bold text-gray-500 mb-1">MÃ SỐ / GHI CHÚ</label><input type="text" id="add-note" class="border p-2 rounded-xl focus:outline-none"></div>
-                <div class="flex justify-end space-x-2 pt-2 border-t">
-                    <button type="button" onclick="toggleModal()" class="px-3 py-1.5 bg-gray-100 rounded-lg">Hủy</button>
-                    <button type="submit" class="px-3 py-1.5 bg-indigo-600 text-white rounded-lg">Lưu lại</button>
-                </div>
-            </form>
+        <div class="overflow-hidden border border-slate-200 rounded-xl">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs min-w-[550px]">
+                    <thead class="bg-slate-900 text-white text-[10px] uppercase font-bold">
+                        <tr>
+                            <th class="p-3 text-center w-12">STT</th>
+                            <th class="p-3">Doanh nghiệp uơm tạo</th>
+                            <th class="p-3">Mục tiêu chứng chỉ / Hướng hỗ trợ</th>
+                            <th class="p-3 text-center w-40">Hiện trạng hồ sơ</th>
+                            <th class="p-3">Ghi chú nghiệp vụ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody" class="divide-y divide-slate-100 bg-white"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script>
-        // 1. LẤY ĐẦY ĐỦ DỮ LIỆU TỪ BỘ NHỚ LOCALSTORAGE
-        const db_projects = JSON.parse(localStorage.getItem('db_projects')) || [];
         const db_certs = JSON.parse(localStorage.getItem('db_certs')) || [];
+        const certLabels = { "Đã cấp giấy": "bg-emerald-50 text-emerald-600 border border-emerald-100 font-bold", "Đã nộp đơn": "bg-blue-50 text-blue-600 border border-blue-100 font-medium", "Chưa nộp đơn": "bg-slate-100 text-slate-400" };
 
         function render() {
-            const sTitle = document.getElementById('s-title').value.toLowerCase().trim();
-            const type = document.getElementById('f-type').value;
+            const query = document.getElementById('search').value.toLowerCase().trim();
             const state = document.getElementById('f-state').value;
-
-            // 2. LỌC DỮ LIỆU AN TOÀN (Sửa lỗi toLowerCase của trường companyName bị undefined)
-            let filtered = db_certs.filter(c => {
-                // Tìm tên công ty realtime từ bảng dự án để đối chiếu bộ lọc tìm kiếm
-                const foundProj = db_projects.find(p => p.id === c.id);
-                const compName = foundProj ? foundProj.company.toLowerCase() : "";
-                const cId = c.id ? c.id.toLowerCase() : "";
-
-                const matchText = compName.includes(sTitle) || cId.includes(sTitle);
-                const matchType = (type === 'All' || c.type === type);
-                const matchState = (state === 'All' || c.state === state);
-                
-                return matchText && matchType && matchState;
-            });
+            let filtered = db_certs.filter(c => (c.companyName || '').toLowerCase().includes(query) && (state === 'All' || c.state === state));
 
             let count = 1;
-            document.getElementById('tbody').innerHTML = filtered.map(c => {
-                // Lấy tên công ty realtime hiển thị lên bảng
-                const foundProj = db_projects.find(p => p.id === c.id);
-                const companyNameRealtime = foundProj ? foundProj.company : "N/A";
-
-                return `
-                    <tr class="hover:bg-gray-50/50">
-                        <td class="p-2.5 font-bold text-center text-gray-400">${count++}</td>
-                        <td class="p-2.5 font-semibold text-gray-800">${companyNameRealtime}</td>
-                        <td class="p-2.5 font-medium text-gray-700">${c.type}</td>
-                        <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded text-[11px] font-bold bg-teal-50 text-teal-600">${c.state}</span></td>
-                        <td class="p-2.5 text-gray-500 italic text-xs">${c.note || '-'}</td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        function toggleModal() {
-            const modal = document.getElementById('local-modal');
-            modal.classList.toggle('hidden'); modal.classList.toggle('flex');
-        }
-
-        function submitForm(e) {
-            e.preventDefault();
-            const success = window.parent.addNewCertData({
-                id: document.getElementById('add-id').value.trim().toUpperCase(),
-                type: document.getElementById('add-type').value,
-                state: document.getElementById('add-state').value,
-                note: document.getElementById('add-note').value.trim()
-            });
-            if(success) {
-                toggleModal();
-                window.location.reload();
-            }
+            document.getElementById('tbody').innerHTML = filtered.map(c => `
+                <tr class="hover:bg-slate-50/50">
+                    <td class="p-3 text-center font-bold text-slate-400">${count++}</td>
+                    <td class="p-3 font-bold text-slate-700">${c.companyName}</td>
+                    <td class="p-3 font-medium text-slate-600 flex items-center">
+                        <i class="fa-solid fa-bookmark text-blue-500 mr-2 shrink-0 w-4 text-center"></i>
+                        <span class="leading-tight">${c.type}</span>
+                    </td>
+                    <td class="p-3 text-center"><span class="px-2.5 py-0.5 rounded text-[9px] font-bold border ${certLabels[c.state] || 'bg-slate-50'}">${c.state}</span></td>
+                    <td class="p-3 text-slate-400 italic text-[11px]">${c.note || '-'}</td>
+                </tr>
+            `).join('');
         }
         window.onload = render;
     </script>
