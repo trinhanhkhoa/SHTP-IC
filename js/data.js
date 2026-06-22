@@ -57,13 +57,34 @@ const default_projects = [
         intro: "Nền tảng thanh toán Fintech Vi-Pay là dự án phát triển giải pháp ví điện tử và cổng thanh toán thế hệ mới.",
         product: "", supports: [], metrics: { members: 2, partners: 0, revenue: "0 Đ", funding: "0 Đ", products: 0 },
         partners_vn: [], highlights: [], awards: []
-    }
+    },
+    { 
+        id: "DA004", 
+        name: "MedTech Việt Nam", 
+        company: "Công ty Cổ phần Công nghệ số MedTech Việt Nam", 
+        leader: "Ngô Văn N", // Chủ nhiệm phía DN
+        manager: "Phạm Văn B", // Chuyên viên SHTP-IC phụ trách
+        phone: "0901234777", 
+        sector: "Công nghệ số", 
+        status: "Còn hoạt động", 
+        year: 2024,
+        contract: "18", 
+        signDate: "2024-01-01",
+        stage: "Tăng tốc",
+        expireDate: "2025-07-01",
+        intro: "MedTech Việt Nam là doanh nghiệp khởi nghiệp trong lĩnh vực nông nghiệp công nghệ cao, chuyên cung cấp các giải pháp IoT giúp tối ưu hóa quy trình canh tác và quản lý trang trại.",
+        product: "Hệ sinh thái MedTech IoT gồm cảm biến đo môi trường, thiết bị điều khiển tự động...",
+        supports: ["Mô hình kinh doanh", "Thương hiệu", "SHTT"],
+        metrics: { members: 15, partners: 120, revenue: "5.2 tỷ", funding: "10 tỷ", products: 3 },
+        partners_vn: ["Tập đoàn Lộc Trời"], highlights: [], awards: []
+    },
 ];
 
 // DỮ LIỆU MẪU SHTT ĐỒNG BỘ
 const default_shtt = [
     { id: "DA001", projectName: "AgriTech Việt Nam", type: "SC", name: "Cảm biến mesh network tiết kiệm pin", docNum: "1-2023-00142", docDate: "2023-04-12", certNum: "1-0040983-000", certDate: "2025-01-15", state: "Cấp bằng", source: "VU" },
     { id: "DA001", projectName: "AgriTech Việt Nam", type: "NH", name: "Logo IoT-Chain và nhận diện", docNum: "4-2023-45122", docDate: "2023-06-20", certNum: "4-0021455-000", certDate: "2024-11-02", state: "Cấp bằng", source: "DA" },
+    { id: "DA004", projectName: "MedTech Việt Nam", type: "SC", name: "Cảm biến môi trường IoT", docNum: "1-2024-00142", docDate: "2024-04-12", certNum: "1-0040983-000", certDate: "2026-01-15", state: "Cấp bằng", source: "VU" },
     { id: "DA002", projectName: "Medicom AI", type: "BQTG", name: "Thuật toán nhận diện khối u AI-Health", docNum: "2345/2024/QTG", docDate: "2024-02-11", certNum: "2345/2024/QTG", certDate: "2024-03-01", state: "Cấp bằng", source: "VU" },
     { id: "DA003", projectName: "SmartLogi Drone", type: "SC", name: "Cơ chế cân bằng con quay hồi chuyển Drone tải nặng", docNum: "1-2025-00985", docDate: "2025-02-20", certNum: "", certDate: "", state: "Đã nộp đơn", source: "VU" }
 ];
