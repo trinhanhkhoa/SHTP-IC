@@ -35,12 +35,14 @@
             </h3>
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs min-w-[450px]">
-                    <thead>
-                        <tr class="text-slate-400 border-b border-slate-100 text-[10px] uppercase font-bold">
-                            <th class="pb-2.5">Tên Dự án</th>
-                            <th class="pb-2.5">Doanh nghiệp công ty chủ quản</th>
-                            <th class="pb-2.5">Ngành dọc</th>
-                            <th class="pb-2.5 text-center w-24">Hiện trạng</th>
+                    <thead class="bg-slate-900 text-white text-[10px] uppercase sticky top-0 z-10">
+                        <tr>
+                            <th class="p-2.5 text-center w-12">STT</th>
+                            <th class="p-3">Tên dự án</th>
+                            <th class="p-3">Tên công ty doanh nghiệp</th>
+                            <th class="p-3">Chủ nhiệm (Doanh nghiệp)</th>
+                            <th class="p-3">Lĩnh vực</th>
+                            <th class="p-3 text-center">Quản lý (SHTP-IC)</th>
                         </tr>
                     </thead>
                     <tbody id="proj-body" class="divide-y divide-slate-100 text-slate-600"></tbody>
@@ -56,14 +58,19 @@
 
     <script>
         function render() {
+            // 1. Gọi dữ liệu từ kho lưu trữ bền vững
             const projects = JSON.parse(localStorage.getItem('db_projects')) || [];
             const shtt = JSON.parse(localStorage.getItem('db_shtt')) || [];
             const certs = JSON.parse(localStorage.getItem('db_certs')) || [];
 
-            // Cơ chế bọc kiểm tra an toàn: Tránh lỗi khi trang mẹ chưa nạp xong hàm
+            // 🌟 ĐÂY LÀ DÒNG KHAI BÁO BỊ THIẾU GÂY RA LỖI "filtered is not defined"
+            // Tạo mảng filtered mặc định chứa toàn bộ dự án (hoặc bạn có thể thêm bộ lọc tìm kiếm tại đây nếu cần)
+            const filtered = projects; 
+
+            // 2. Thuật toán cộng dồn doanh thu 2 lớp đầu não (Đã bọc phòng vệ chống sập)
             let totalRev = 0;
             if (window.parent && typeof window.parent.parseRevenueToNumber === 'function') {
-                totalRev = projects.reduce((sum, p) => {
+                totalRev = filtered.reduce((sum, p) => {
                     let text = "0 Đ";
                     if (p.revenue) text = p.revenue;
                     else if (p.metrics && p.metrics.revenue) text = p.metrics.revenue;
@@ -71,38 +78,56 @@
                 }, 0);
             }
 
+            // 3. Kết xuất chuỗi tiền tệ lên ô KPI tổng
             if (window.parent && typeof window.parent.formatRevenueToString === 'function') {
                 document.getElementById('kpi-rev').innerText = window.parent.formatRevenueToString(totalRev);
             } else {
                 document.getElementById('kpi-rev').innerText = totalRev.toLocaleString('vi-VN') + " Đ";
             }
 
-            document.getElementById('kpi-total').innerText = projects.filter(p => p.status === "Còn hoạt động").length;
-            document.getElementById('kpi-shtt').innerText = shtt.filter(s => s.state === 'Đã cấp giấy' || s.state === 'CB').length;
-            document.getElementById('kpi-khcn').innerText = certs.filter(c => c.state === 'Đã cấp giấy').length;
+            // 4. Cập nhật các chỉ số đếm số lượng KPIs
+            if (document.getElementById('kpi-total')) {
+                document.getElementById('kpi-total').innerText = projects.filter(p => p.status === "Còn hoạt động").length;
+            }
+            if (document.getElementById('kpi-shtt')) {
+                document.getElementById('kpi-shtt').innerText = shtt.filter(s => s.state === 'Đã cấp giấy' || s.state === 'CB').length;
+            }
+            if (document.getElementById('kpi-khcn')) {
+                document.getElementById('kpi-khcn').innerText = certs.filter(c => c.state === 'Đã cấp giấy').length;
+            }
 
-            document.getElementById('proj-body').innerHTML = projects.slice(-4).reverse().map(p => `
-                <tr>
-                    <td class="py-3 font-bold text-slate-700">${p.name}</td>
-                    <td class="py-3 text-slate-500">${p.company}</td>
-                    <td class="py-3"><span class="px-2 py-0.5 bg-slate-100 text-slate-600 rounded font-medium text-[10px]">${p.sector}</span></td>
-                    <td class="py-3 text-center"><span class="w-2 h-2 rounded-full inline-block ${p.status==='Còn hoạt động'?'bg-emerald-500':'bg-amber-500'}"></span></td>
+            // 5. Kết xuất bảng danh sách dự án (Sử dụng biến filtered an toàn)
+            let count = 1;
+            document.getElementById('proj-body').innerHTML = filtered.slice(-4).reverse().map(p => `
+                <tr class="hover:bg-indigo-50/40 transition-all">
+                    <td class="p-2.5 font-bold text-center text-slate-400 bg-slate-50/30">${count++}</td>
+                    <td class="p-2.5 font-bold text-slate-800">${p.name || '-'}</td>
+                    <td class="p-2.5 text-slate-500 font-medium">${p.company || '-'}</td>
+                    <td class="p-2.5 font-bold text-slate-700">${p.leader || '-'}</td>
+                    <td class="p-2.5"><span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium text-[10px]">${p.sector || '-'}</span></td>
+                    <td class="p-2.5 text-center text-slate-500 italic font-medium">${p.manager || '-'}</td>
                 </tr>
             `).join('');
 
+            // 6. Kết xuất cơ cấu tỷ trọng ngành dọc (%)
             const sectors = ["Công nghệ số", "IoT", "AI", "Sinh học"];
             document.getElementById('sector-list').innerHTML = sectors.map(s => {
-                const count = projects.filter(p => p.sector && p.sector.includes(s)).length;
-                const percent = projects.length ? (count / projects.length * 100) : 0;
+                const countSec = filtered.filter(p => p.sector && p.sector.includes(s)).length;
+                const percent = filtered.length ? (countSec / filtered.length * 100) : 0;
                 return `
                     <div class="space-y-1">
-                        <div class="flex justify-between font-bold text-slate-600 text-[10px]"><span>${s}</span><span>${count} DA</span></div>
-                        <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-blue-600 rounded-full" style="width: ${percent}%"></div></div>
+                        <div class="flex justify-between font-bold text-slate-600 text-[10px]">
+                            <span>${s}</span>
+                            <span>${countSec} DA</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-600 rounded-full" style="width: ${percent}%"></div>
+                        </div>
                     </div>`;
             }).join('');
         }
 
-        // Đợi toàn bộ cây DOM được tạo xong mới kích hoạt bộ quét trễ nhằm đồng bộ tối đa với trang mẹ
+        // Lắng nghe sự kiện để kích hoạt render mượt mà sau khi trang mẹ sẵn sàng
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(render, 150);
         });

@@ -6,21 +6,24 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-white text-xs text-gray-700 p-2 sm:p-4">
+<body class="bg-white text-xs text-gray-700 p-2">
     <div class="space-y-4 border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm">
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <input type="text" id="search" oninput="render()" placeholder="Lọc theo công ty..." class="border border-slate-200 rounded-xl p-2.5 bg-slate-50 outline-none text-xs focus:border-blue-500">
-            <select id="f-state" onchange="render()" class="border border-slate-200 rounded-xl p-2.5 bg-white outline-none text-xs"><option value="All">Tất cả hiện trạng duyệt</option><option value="Chưa nộp đơn">Chưa nộp đơn</option><option value="Đã nộp đơn">Đã nộp đơn</option><option value="Đã cấp giấy">Đã cấp giấy</option></select>
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 flex-grow w-full">
+                <input type="text" id="search" placeholder="Lọc theo tên doanh nghiệp..." class="border border-slate-200 rounded-xl p-2.5 bg-slate-50 outline-none text-xs focus:border-blue-500">
+                <select id="f-state" class="border border-slate-200 rounded-xl p-2.5 bg-white outline-none text-xs"><option value="All">Tất cả hiện trạng duyệt</option><option value="Chưa nộp đơn">Chưa nộp đơn</option><option value="Đã nộp đơn">Đã nộp đơn</option><option value="Đã cấp giấy">Đã cấp giấy</option></select>
+            </div>
+            <button onclick="toggleLocalModal('cert-modal')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2.5 rounded-xl shrink-0 w-full sm:w-auto flex items-center justify-center"><i class="fa-solid fa-plus mr-1.5"></i> KHAI BÁO CHỨNG CHỈ</button>
         </div>
 
         <div class="overflow-hidden border border-slate-200 rounded-xl">
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs min-w-[550px]">
-                    <thead class="bg-slate-900 text-white text-[10px] uppercase font-bold">
+                    <thead class="bg-slate-900 text-white text-[9px] uppercase font-bold">
                         <tr>
                             <th class="p-3 text-center w-12">STT</th>
-                            <th class="p-3">Doanh nghiệp uơm tạo</th>
+                            <th class="p-3">Doanh nghiệp ươm tạo</th>
                             <th class="p-3">Mục tiêu chứng chỉ / Hướng hỗ trợ</th>
                             <th class="p-3 text-center w-40">Hiện trạng hồ sơ</th>
                             <th class="p-3">Ghi chú nghiệp vụ</th>
@@ -32,11 +35,58 @@
         </div>
     </div>
 
+    <div id="cert-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs hidden items-center justify-center z-[200] p-4">
+        <div class="bg-white w-full max-w-sm rounded-2xl shadow-xl overflow-hidden border border-slate-100">
+            <div class="bg-slate-900 p-4 flex justify-between items-center text-white"><h3 class="font-bold uppercase tracking-wide text-[11px]">Khai báo mục tiêu chứng chỉ</h3><button type="button" onclick="toggleLocalModal('cert-modal')" class="text-xl leading-none">&times;</button></div>
+            <form onsubmit="saveLocalCert(event)" class="p-5 space-y-3.5 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-500 mb-1">DOANH NGHIỆP ỦY THÁC *</label>
+                    <select id="add-comp-id" class="w-full border border-slate-200 p-2 rounded-xl bg-white"></select>
+                </div>
+                <div><label class="block font-bold text-slate-500 mb-1">MỤC TIÊU CHỨNG CHỈ / TIÊU CHUẨN *</label><input type="text" id="add-cert-type" required placeholder="Ví dụ: ISO 9001:2015 hoặc TCCS" class="w-full border border-slate-200 p-2 rounded-xl outline-none"></div>
+                <div><label class="block font-bold text-slate-500 mb-1">HIỆN TRẠNG HỒ SƠ</label><select id="add-cert-state" class="w-full border border-slate-200 p-2 rounded-xl bg-white"><option value="Chưa nộp đơn">Chưa nộp đơn</option><option value="Đã nộp đơn">Đã nộp đơn</option><option value="Đã cấp giấy">Đã cấp giấy</option></select></div>
+                <div><label class="block font-bold text-slate-500 mb-1">GHI CHÚ NGHIỆP VỤ</label><input type="text" id="add-cert-note" value="Đang hoàn thiện đề tài cơ sở" class="w-full border border-slate-200 p-2 rounded-xl outline-none"></div>
+                <div class="flex justify-end space-x-2 pt-2 border-t">
+                    <button type="button" onclick="toggleLocalModal('cert-modal')" class="px-4 py-2 font-bold text-slate-400">Hủy</button>
+                    <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-sm">GHI NHẬN</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        const db_certs = JSON.parse(localStorage.getItem('db_certs')) || [];
         const certLabels = { "Đã cấp giấy": "bg-emerald-50 text-emerald-600 border border-emerald-100 font-bold", "Đã nộp đơn": "bg-blue-50 text-blue-600 border border-blue-100 font-medium", "Chưa nộp đơn": "bg-slate-100 text-slate-400" };
 
+        function toggleLocalModal(id) { const el = document.getElementById(id); el.classList.toggle('hidden'); el.classList.toggle('flex'); if(!el.classList.contains('hidden')) loadCompanyOptions(); }
+        
+        function loadCompanyOptions() {
+            const projects = JSON.parse(localStorage.getItem('db_projects')) || [];
+            document.getElementById('add-comp-id').innerHTML = projects.map(p => `<option value="${p.company}">${p.company}</option>`).join('');
+        }
+
+        function saveLocalCert(e) {
+            e.preventDefault();
+            const projects = JSON.parse(localStorage.getItem('db_projects')) || [];
+            const selectedComp = document.getElementById('add-comp-id').value;
+            const foundProj = projects.find(p => p.company === selectedComp);
+
+            const newCertRecord = {
+                id: foundProj ? foundProj.id : "DA000",
+                companyName: selectedComp,
+                type: document.getElementById('add-cert-type').value.trim(),
+                state: document.getElementById('add-cert-state').value,
+                note: document.getElementById('add-cert-note').value.trim()
+            };
+
+            if (window.parent && typeof window.parent.submitNewCertData === 'function') {
+                window.parent.submitNewCertData(newCertRecord);
+                toggleLocalModal('cert-modal');
+                render();
+            }
+        }
+
         function render() {
+            const db_certs = JSON.parse(localStorage.getItem('db_certs')) || [];
             const query = document.getElementById('search').value.toLowerCase().trim();
             const state = document.getElementById('f-state').value;
             let filtered = db_certs.filter(c => (c.companyName || '').toLowerCase().includes(query) && (state === 'All' || c.state === state));
@@ -46,15 +96,14 @@
                 <tr class="hover:bg-slate-50/50">
                     <td class="p-3 text-center font-bold text-slate-400">${count++}</td>
                     <td class="p-3 font-bold text-slate-700">${c.companyName}</td>
-                    <td class="p-3 font-medium text-slate-600 flex items-center">
-                        <i class="fa-solid fa-bookmark text-blue-500 mr-2 shrink-0 w-4 text-center"></i>
-                        <span class="leading-tight">${c.type}</span>
-                    </td>
+                    <td class="p-3 font-medium text-slate-600 flex items-center"><i class="fa-solid fa-bookmark text-blue-500 mr-2 shrink-0 w-4 text-center"></i><span class="leading-tight">${c.type}</span></td>
                     <td class="p-3 text-center"><span class="px-2.5 py-0.5 rounded text-[9px] font-bold border ${certLabels[c.state] || 'bg-slate-50'}">${c.state}</span></td>
                     <td class="p-3 text-slate-400 italic text-[11px]">${c.note || '-'}</td>
                 </tr>
             `).join('');
         }
+        document.getElementById('search').oninput = render;
+        document.getElementById('f-state').onchange = render;
         window.onload = render;
     </script>
 </body>

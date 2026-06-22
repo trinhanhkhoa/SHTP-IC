@@ -10,30 +10,49 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     </style>
 </head>
-<body class="bg-white text-xs text-gray-700 p-2 sm:p-4">
+<body class="bg-white text-xs text-gray-700 p-2">
 
-    <div class="flex flex-col lg:flex-row gap-4 h-full lg:h-[86vh] overflow-hidden">
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-3 mb-4 border border-slate-200 rounded-2xl p-4 shadow-sm">
+        <div id="filter-area" class="grid grid-cols-1 sm:grid-cols-3 gap-2 flex-grow w-full">
+            <input type="text" id="search-proj" oninput="renderProjects()" placeholder="Tìm theo tên dự án, công ty, chủ nhiệm..." class="border border-slate-200 rounded-xl p-2.5 bg-slate-50 outline-none text-xs focus:border-blue-500">
+            <select id="filter-sector" onchange="renderProjects()" class="border border-slate-200 rounded-xl p-2 bg-white text-xs">
+                <option value="All">Tất cả ngành dọc</option>
+                <option value="Công nghệ số">Công nghệ số</option>
+                <option value="IoT">IoT</option>
+                <option value="AI">AI</option>
+                <option value="Sinh học">Sinh học</option>
+            </select>
+            <select id="filter-status" onchange="renderProjects()" class="border border-slate-200 rounded-xl p-2 bg-white text-xs">
+                <option value="All">Tất cả hiện trạng</option>
+                <option value="Còn hoạt động">Còn hoạt động</option>
+                <option value="Tạm ngừng">Tạm ngừng</option>
+            </select>
+        </div>
+        <button onclick="toggleProjectModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2.5 rounded-xl shrink-0 w-full sm:w-auto flex items-center justify-center transition-colors shadow-sm">
+            <i class="fa-solid fa-plus mr-1.5"></i> THÊM DỰ ÁN MỚI
+        </button>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-4 h-full lg:h-[76vh] overflow-hidden">
         
-        <div id="left-panel" class="w-full flex flex-col border border-slate-200 rounded-2xl p-4 transition-all duration-300 bg-white shadow-sm shrink-0">
-            <div id="filter-area" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mb-4">
-                <input type="text" id="search" oninput="render()" placeholder="Tìm tên, doanh nghiệp..." class="border border-slate-200 rounded-xl p-2.5 bg-slate-50 outline-none focus:border-blue-500 text-xs">
-                <select id="f-sec" onchange="render()" class="border border-slate-200 rounded-xl p-2 bg-white outline-none text-xs"><option value="All">Tất cả lĩnh vực</option><option value="IoT">IoT</option><option value="AI">AI</option><option value="Công nghệ số">Công nghệ số</option><option value="Sinh học">Sinh học</option></select>
-                <select id="f-stat" onchange="render()" class="border border-slate-200 rounded-xl p-2 bg-white outline-none text-xs"><option value="All">Tất cả hiện trạng</option><option value="Còn hoạt động">Còn hoạt động</option><option value="Tạm ngừng">Tạm ngừng</option></select>
-            </div>
-
+        <div id="left-panel" class="w-full flex flex-col border border-slate-200 rounded-2xl p-4 transition-all duration-300 bg-white shadow-sm shrink-0 overflow-hidden">
             <div class="overflow-auto flex-grow rounded-xl border border-slate-200">
-                <table class="w-full text-left text-xs min-w-[500px]">
-                    <thead class="bg-slate-900 text-white text-[10px] uppercase sticky top-0 z-10">
+                <table class="w-full text-left text-xs min-w-[1100px]">
+                    <thead class="bg-slate-900 text-white text-[10px] uppercase font-bold tracking-wider sticky top-0 z-10">
                         <tr>
                             <th class="p-3 text-center w-12">STT</th>
-                            <th class="p-3">Tên Dự án</th>
-                            <th class="p-3">Doanh nghiệp chủ quản</th>
-                            <th id="th-manager" class="p-3">Người quản lý</th>
+                            <th class="p-3">Tên dự án ươm tạo</th>
+                            <th id="th-comp" class="p-3">Tên công ty chủ quản</th>
+                            <th id="th-leader" class="p-3">Chủ nhiệm / Đại diện</th>
                             <th id="th-sec" class="p-3">Lĩnh vực</th>
-                            <th id="th-stat" class="p-3 text-center w-24">Trạng thái</th>
+                            <th id="th-manager" class="p-3">Quản lý (SHTP-IC)</th>
+                            <th id="th-stage" class="p-3 text-center w-24">Giai đoạn</th>
+                            <th id="th-contract" class="p-3 text-center w-24">Hợp đồng số</th>
+                            <th id="th-expire" class="p-3 text-center w-24">Hạn hợp đồng</th>
+                            <th class="p-3 text-center w-24">Hiện trạng</th>
                         </tr>
                     </thead>
-                    <tbody id="tbody" class="divide-y divide-slate-100 bg-white"></tbody>
+                    <tbody id="projects-tbody" class="divide-y divide-slate-100 bg-white text-slate-600"></tbody>
                 </table>
             </div>
         </div>
@@ -45,6 +64,7 @@
                     <p id="d-company" class="text-xs font-bold text-blue-600 mt-0.5"></p>
                     <div class="flex flex-wrap gap-1.5 mt-2">
                         <span id="d-sector" class="px-2 py-0.5 bg-blue-50 text-blue-600 rounded font-bold text-[9px]"></span>
+                        <span id="d-stage" class="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded font-bold text-[9px]"></span>
                         <span id="d-status" class="px-2 py-0.5 rounded font-bold text-[9px]"></span>
                         <span id="d-contract" class="px-2 py-0.5 bg-slate-100 text-slate-500 rounded text-[9px]"></span>
                     </div>
@@ -58,14 +78,19 @@
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-100"><h3 class="font-bold text-slate-700 mb-1.5 flex items-center text-blue-600"><i class="fa-solid fa-box-open mr-1.5"></i>2. Giới thiệu sản phẩm</h3><p id="d-product" class="text-slate-500 leading-relaxed text-justify text-[11px]"></p></div>
                 </div>
 
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100"><h3 class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-user-tie mr-1.5 text-blue-600"></i>Chủ nhiệm dự án (DN)</h3><p id="d-leader" class="text-slate-600 font-semibold text-xs"></p></div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-100"><h3 class="font-bold text-slate-700 mb-1"><i class="fa-solid fa-user-gear mr-1.5 text-blue-600"></i>Chuyên viên quản lý (SHTP-IC)</h3><p id="d-manager" class="text-slate-600 font-semibold text-xs"></p></div>
+                </div>
+
                 <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
                     <h3 class="font-bold text-slate-700 mb-2 flex items-center text-blue-600"><i class="fa-solid fa-handshake-angle mr-1.5"></i>3. Các nội dung đã hỗ trợ trong chương trình ươm tạo</h3>
                     <div id="support-tags" class="flex flex-wrap gap-1.5"></div>
                 </div>
 
                 <div>
-                    <h3 class="font-bold text-slate-700 mb-2 flex items-center text-blue-600"><i class="fa-solid fa-square-poll-vertical mr-1.5"></i>4. Kết quả hoạt động</h3>
-                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center font-bold mb-4">
+                    <h3 class="font-bold text-slate-700 mb-2 flex items-center text-blue-600"><i class="fa-solid fa-square-poll-vertical mr-1.5"></i>4. Kết quả hoạt động hoạt động (KPIs)</h3>
+                    <div class="grid grid-cols-3 sm:grid-cols-5 gap-2 text-center font-bold mb-4">
                         <div class="bg-slate-50 p-2 rounded-xl border border-slate-100"><p class="text-[8px] text-slate-400 uppercase">Thành viên</p><span id="m-members" class="text-slate-700 text-xs"></span></div>
                         <div class="bg-slate-50 p-2 rounded-xl border border-slate-100"><p class="text-[8px] text-slate-400 uppercase">Đối tác</p><span id="m-partners" class="text-slate-700 text-xs"></span></div>
                         <div class="bg-slate-50 p-2 rounded-xl border border-slate-100"><p class="text-[8px] text-slate-400 uppercase">Doanh thu</p><span id="m-rev" class="text-emerald-600 text-xs"></span></div>
@@ -74,88 +99,240 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-slate-100 pt-3">
-                        <div><h4 class="font-bold text-slate-700 mb-1.5 text-[11px] uppercase">Mạng lưới đối tác</h4><ul id="d-partners" class="list-disc list-inside text-slate-500 space-y-0.5 text-[11px]"></ul></div>
-                        <div><h4 class="font-bold text-slate-700 mb-1.5 text-[11px] uppercase">Hoạt động nổi bật</h4><ul id="d-highlights" class="space-y-1"></ul></div>
-                        <div><h4 class="font-bold text-slate-700 mb-1.5 text-[11px] uppercase">Giải thưởng</h4><ul id="d-awards" class="space-y-0.5 text-[11px]"></ul></div>
+                        <div><h4 class="font-bold text-slate-700 mb-1 text-[11px] uppercase">Mạng lưới đối tác</h4><ul id="d-partners" class="list-disc list-inside text-slate-500 space-y-0.5 text-[11px]"></ul></div>
+                        <div><h4 class="font-bold text-slate-700 mb-1 text-[11px] uppercase">Hoạt động nổi bật</h4><ul id="d-highlights" class="space-y-1"></ul></div>
+                        <div><h4 class="font-bold text-slate-700 mb-1 text-[11px] uppercase">Giải thưởng đạt được</h4><ul id="d-awards" class="space-y-0.5 text-[11px]"></ul></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <div id="local-project-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs hidden items-center justify-center z-[200] p-2 sm:p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-3xl rounded-2xl shadow-xl overflow-hidden border border-slate-100 my-auto">
+            <div class="bg-slate-900 p-4 flex justify-between items-center text-white">
+                <h3 class="font-bold text-xs uppercase tracking-wide flex items-center"><i class="fa-solid fa-folder-plus mr-2 text-blue-500"></i> Khai báo thông tin dự án mới</h3>
+                <button type="button" onclick="toggleProjectModal()" class="text-xl hover:text-slate-300 leading-none">&times;</button>
+            </div>
+            
+            <form onsubmit="saveNewProject(event)" class="p-4 sm:p-6 space-y-4 text-xs max-h-[80vh] overflow-y-auto">
+                <div class="space-y-3">
+                    <h4 class="font-bold text-blue-600 border-b pb-1 text-[11px] uppercase tracking-wider">Phần I: Thông tin chung</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div><label class="block font-bold text-slate-500 mb-1">MÃ DỰ ÁN (ID) *</label><input type="text" id="add-id" required placeholder="Ví dụ: DA009" class="w-full border border-slate-200 p-2 rounded-xl outline-none focus:border-blue-500 bg-slate-50"></div>
+                        <div><label class="block font-bold text-slate-500 mb-1">TÊN DỰ ÁN ƯƠM TẠO *</label><input type="text" id="add-name" required placeholder="Ví dụ: Robot thông minh" class="w-full border border-slate-200 p-2 rounded-xl outline-none focus:border-blue-500"></div>
+                    </div>
+                    <div><label class="block font-bold text-slate-500 mb-1">TÊN CÔNG TY CHỦ QUẢN *</label><input type="text" id="add-company" required placeholder="Công ty TNHH..." class="w-full border border-slate-200 p-2 rounded-xl outline-none focus:border-blue-500"></div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div><label class="block font-bold text-slate-500 mb-1">CHỦ NHIỆM / ĐẠI DIỆN *</label><input type="text" id="add-leader" required placeholder="Tên chủ doanh nghiệp" class="w-full border border-slate-200 p-2 rounded-xl outline-none focus:border-blue-500"></div>
+                        <div><label class="block font-bold text-slate-500 mb-1">QUẢN LÝ (SHTP-IC) *</label><input type="text" id="add-manager" required placeholder="Tên chuyên viên phụ trách" class="w-full border border-slate-200 p-2 rounded-xl outline-none focus:border-blue-500"></div>
+                        <div><label class="block font-bold text-slate-500 mb-1">SỐ ĐIỆN THOẠI KHỞI TẠO *</label><input type="text" id="add-phone" required placeholder="090..." class="w-full border border-slate-200 p-2 rounded-xl outline-none focus:border-blue-500"></div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                        <div>
+                            <label class="block font-bold text-slate-500 mb-1">SỐ HỢP ĐỒNG *</label>
+                            <div class="flex items-center bg-slate-50 border border-slate-200 rounded-xl overflow-hidden pr-2">
+                                <input type="text" id="add-contract" required placeholder="09" class="w-full p-2 bg-transparent outline-none text-right">
+                                <span class="text-slate-400 font-bold ml-1 shrink-0">/HĐ-VUDN</span>
+                            </div>
+                        </div>
+                        <div><label class="block font-bold text-slate-500 mb-1">THỜI GIAN KÝ HỢP ĐỒNG *</label><input type="date" id="add-signDate" required onchange="calculateExpirationDate()" class="w-full border border-slate-200 p-1.5 rounded-xl outline-none bg-white"></div>
+                        <div>
+                            <label class="block font-bold text-slate-500 mb-1">GIAI ĐOẠN ƯƠM TẠO *</label>
+                            <select id="add-stage" onchange="calculateExpirationDate()" class="w-full border border-slate-200 p-2 rounded-xl bg-white outline-none">
+                                <option value="Tiền ươm tạo">Tiền ươm tạo (6 tháng)</option>
+                                <option value="Ươm tạo">Ươm tạo (12 tháng)</option>
+                                <option value="Tăng tốc">Tăng tốc (18 tháng)</option>
+                                <option value="Hậu ươm tạo">Hậu ươm tạo (7 năm)</option>
+                            </select>
+                        </div>
+                        <div><label class="block font-bold text-slate-400 mb-1">HẠN CHÓT TỰ TÍNH</label><input type="text" id="add-expireDate" readonly class="w-full border border-transparent bg-slate-100 p-2 rounded-xl text-center font-bold text-slate-700 outline-none"></div>
+                    </div>
+                    <div><label class="block font-bold text-slate-500 mb-1">LĨNH VỰC CHUYÊN MÔN</label><select id="add-sector" class="w-full border border-slate-200 p-2 rounded-xl bg-white"><option value="Công nghệ số">Công nghệ số</option><option value="IoT">IoT</option><option value="AI">AI</option><option value="Sinh học">Sinh học</option></select></div>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center border-b pb-1"><h4 class="font-bold text-blue-600 text-[11px] uppercase tracking-wider">Phần II: Nội dung thuyết minh</h4><span id="intro-word-count" class="text-slate-400 text-[10px]">0/400 từ</span></div>
+                    <div><textarea id="add-intro" rows="2" oninput="validateWordLimit(this, 'intro-word-count')" placeholder="Tổng quan dự án..." class="w-full border border-slate-200 p-2 rounded-xl outline-none focus:border-blue-500"></textarea></div>
+                    <div class="flex justify-between items-center"><span id="product-word-count" class="text-slate-400 text-[10px] ml-auto">0/400 từ</span></div>
+                    <div><textarea id="add-product" rows="2" oninput="validateWordLimit(this, 'product-word-count')" placeholder="Mô tả sản phẩm..." class="w-full border border-slate-200 p-2 rounded-xl outline-none focus:border-blue-500"></textarea></div>
+                </div>
+
+                <div class="space-y-3">
+                    <h4 class="font-bold text-blue-600 border-b pb-1 text-[11px] uppercase tracking-wider">Phần III: KPIs hoạt động (Metrics)</h4>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        <div><label class="block font-bold text-slate-400 mb-1 text-[9px]">Doanh thu</label><input type="text" id="add-revenue" value="0 Đ" class="w-full border border-slate-200 p-1.5 rounded-lg text-center outline-none"></div>
+                        <div><label class="block font-bold text-slate-400 mb-1 text-[9px]">Vốn gọi</label><input type="text" id="add-funding" value="0 Đ" class="w-full border border-slate-200 p-1.5 rounded-lg text-center outline-none"></div>
+                        <div><label class="block font-bold text-slate-400 mb-1 text-[9px]">Số sản phẩm</label><input type="number" id="add-products" value="1" class="w-full border border-slate-200 p-1.5 rounded-lg text-center outline-none"></div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-2 pt-3 border-t">
+                    <button type="button" onclick="toggleProjectModal()" class="px-4 py-2 font-bold text-slate-400">ĐÓNG</button>
+                    <button type="submit" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-sm">LƯU HỒ SƠ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        const db_projects = JSON.parse(localStorage.getItem('db_projects')) || [];
         const statusColors = { "Còn hoạt động": "bg-emerald-50 text-emerald-700 border border-emerald-100", "Tạm ngừng": "bg-amber-50 text-amber-700 border border-amber-100", "Ngưng hoạt động": "bg-rose-50 text-rose-700 border border-rose-100" };
 
-        function render() {
-            const query = document.getElementById('search').value.toLowerCase().trim();
-            const sec = document.getElementById('f-sec').value;
-            const stat = document.getElementById('f-stat').value;
-            let filtered = db_projects.filter(p => (p.name.toLowerCase().includes(query) || p.company.toLowerCase().includes(query)) && (sec === 'All' || p.sector.includes(sec)) && (stat === 'All' || p.status === stat));
+        function toggleProjectModal() { const m = document.getElementById('local-project-modal'); m.classList.toggle('hidden'); m.classList.toggle('flex'); }
+
+        function calculateExpirationDate() {
+            const signDateVal = document.getElementById('add-signDate').value;
+            const stage = document.getElementById('add-stage').value;
+            const expireInput = document.getElementById('add-expireDate');
+            if (!signDateVal) { expireInput.value = "Chờ ngày"; return; }
+            let d = new Date(signDateVal);
+            if (stage === "Tiền ươm tạo") d.setMonth(d.getMonth() + 6);
+            else if (stage === "Ươm tạo") d.setMonth(d.getMonth() + 12);
+            else if (stage === "Tăng tốc") d.setMonth(d.getMonth() + 18);
+            else if (stage === "Hậu ươm tạo") d.setFullYear(d.getFullYear() + 7);
+            expireInput.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        }
+
+        function validateWordLimit(textarea, counterId) {
+            let words = textarea.value.trim().split(/\s+/).filter(w => w.length > 0);
+            document.getElementById(counterId).innerText = `${words.length}/400 từ`;
+            if (words.length > 400) {
+                alert("Nội dung vượt giới hạn 400 từ!");
+                textarea.value = words.slice(0, 400).join(" ");
+                document.getElementById(counterId).innerText = "400/400 từ";
+            }
+        }
+
+        function renderProjects() {
+            const projects = JSON.parse(localStorage.getItem('db_projects')) || [];
+            const query = document.getElementById('search-proj').value.toLowerCase().trim();
+            const sector = document.getElementById('filter-sector').value;
+            const status = document.getElementById('filter-status').value;
+
+            const filtered = projects.filter(p => {
+                const textMatch = p.name.toLowerCase().includes(query) || p.company.toLowerCase().includes(query) || (p.leader && p.leader.toLowerCase().includes(query));
+                return textMatch && (sector === 'All' || p.sector.includes(sector)) && (status === 'All' || p.status === status);
+            });
 
             let count = 1;
-            document.getElementById('tbody').innerHTML = filtered.map(p => `
-                <tr onclick="showDetails('${p.id}')" class="hover:bg-slate-50 cursor-pointer transition-all">
-                    <td class="p-3 font-bold text-center text-slate-400">${count++}</td>
+            document.getElementById('projects-tbody').innerHTML = filtered.map(p => `
+                <tr onclick="showDetails('${p.id}')" class="hover:bg-blue-50/40 cursor-pointer transition-all">
+                    <td class="p-3 text-center font-bold text-slate-400 bg-slate-50/30">${count++}</td>
                     <td class="p-3 font-bold text-slate-800">${p.name}</td>
-                    <td class="p-3 font-medium text-slate-500">${p.company}</td>
-                    <td class="td-hidable p-3 text-slate-400">${p.manager || '-'}</td>
-                    <td class="td-hidable p-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-600 rounded font-bold text-[9px]">${p.sector}</span></td>
-                    <td class="p-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${statusColors[p.status] || 'bg-slate-100'}">${p.status}</span></td>
+                    <td class="td-hidable p-3 font-medium text-slate-500">${p.company}</td>
+                    <td class="td-hidable p-3 font-semibold text-slate-700">${p.leader || '-'}</td>
+                    <td class="td-hidable p-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-600 rounded text-[10px] font-medium">${p.sector}</span></td>
+                    <td class="td-hidable p-3 text-slate-500 italic">${p.manager || '-'}</td>
+                    <td class="td-hidable p-3 text-center font-bold text-indigo-600">${p.stage || 'Ươm tạo'}</td>
+                    <td class="td-hidable p-3 text-center font-mono text-slate-700">${p.contract ? p.contract + '/HĐ-VUDN' : '-'}</td>
+                    <td class="td-hidable p-3 text-center text-slate-500 font-medium">${p.expireDate || '-'}</td>
+                    <td class="p-3 text-center">
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${statusColors[p.status] || 'bg-slate-100'}">${p.status}</span>
+                    </td>
                 </tr>
             `).join('');
         }
 
         function showDetails(id) {
-            const p = db_projects.find(item => item.id === id);
+            const projects = JSON.parse(localStorage.getItem('db_projects')) || [];
+            const p = projects.find(item => item.id === id);
             if(!p) return;
 
-            // Xử lý ẩn/hiện panel theo độ rộng thiết bị động thời gian thực
+            // Xử lý Responsive co giãn layout Master-Detail
             if (window.innerWidth >= 1024) {
-                document.getElementById('left-panel').className = "w-1/3 flex flex-col border border-slate-200 rounded-2xl p-4 transition-all duration-300 bg-white shadow-sm shrink-0";
-                if(document.getElementById('th-manager')) document.getElementById('th-manager').style.display = "none";
-                if(document.getElementById('th-sec')) document.getElementById('th-sec').style.display = "none";
+                document.getElementById('left-panel').className = "w-full lg:w-1/3 flex flex-col border border-slate-200 rounded-2xl p-4 transition-all duration-300 bg-white shadow-sm shrink-0 overflow-hidden";
+                document.getElementById('filter-area').style.display = "none";
+                const hiddenIds = ['th-comp', 'th-leader', 'th-sec', 'th-manager', 'th-stage', 'th-contract', 'th-expire'];
+                hiddenIds.forEach(id => { if(document.getElementById(id)) document.getElementById(id).style.display = "none"; });
                 document.querySelectorAll('.td-hidable').forEach(el => el.style.display = "none");
             } else {
-                document.getElementById('left-panel').style.display = "none"; // Trên Mobile thì ẩn hẳn bảng để nhường chỗ xem chi tiết
+                document.getElementById('left-panel').style.display = "none";
             }
 
             document.getElementById('right-panel').style.display = "flex";
 
-            // Bơm dữ liệu uơm tạo 360 độ
+            // Đổ dữ liệu chi tiết 360 độ
             document.getElementById('d-name').innerText = p.name;
             document.getElementById('d-company').innerText = p.company;
             document.getElementById('d-sector').innerText = p.sector;
-            document.getElementById('d-contract').innerText = `${p.contract || 'HĐ số 07/HĐUT-VUDN'} (${p.contractDate || '2024-2026'})`;
-            document.getElementById('d-intro').innerText = p.intro || 'Thông tin giới thiệu tổng quan của doanh nghiệp đang được cập nhật.';
-            document.getElementById('d-product').innerText = p.product || 'Hệ thống giải pháp công nghệ kĩ thuật và sản phẩm cốt lõi của dự án.';
+            document.getElementById('d-stage').innerText = p.stage || 'Ươm tạo';
+            document.getElementById('d-contract').innerText = `HĐ: ${p.contract || '07'}/HĐ-VUDN (${p.signDate || 'Chưa cập nhật'} đến ${p.expireDate || 'Chưa cập nhật'})`;
+            document.getElementById('d-intro').innerText = p.intro || 'Thông tin giới thiệu tổng quan đang được cập nhật.';
+            document.getElementById('d-product').innerText = p.product || 'Thông tin giải pháp công nghệ đang được cập nhật.';
+            document.getElementById('d-leader').innerText = p.leader || '-';
+            document.getElementById('d-manager').innerText = p.manager || '-';
             document.getElementById('d-status').innerText = p.status;
             document.getElementById('d-status').className = `px-2 py-0.5 rounded font-bold text-[9px] ${statusColors[p.status]}`;
 
-            const supports = p.supports || ["Tư vấn mô hình kinh doanh", "Hỗ trợ bảo hộ SHTT", "Kêu gọi vốn đầu tư"];
-            document.getElementById('support-tags').innerHTML = supports.map(s => `<span class="px-2 py-1 bg-blue-50 border border-blue-200 text-blue-600 font-bold rounded-xl text-[10px]"><i class="fa-solid fa-circle-check mr-1 text-emerald-500"></i>${s}</span>`).join('');
+            const supports = p.supports || ["Mô hình kinh doanh", "Thủ tục bảo hộ SHTT"];
+            document.getElementById('support-tags').innerHTML = supports.map(s => `<span class="px-2.5 py-1 bg-blue-50 border border-blue-200 text-blue-600 font-bold rounded-xl text-[10px]"><i class="fa-solid fa-circle-check mr-1 text-emerald-500"></i>${s}</span>`).join('');
 
-            const m = p.metrics || { members: 5, partners: 0, revenue: p.revenue || "0 Đ", funding: "0 Đ", products: 0 };
-            document.getElementById('m-members').innerText = `${m.members} người`;
-            document.getElementById('m-partners').innerText = `${m.partners}+ ĐT`;
-            document.getElementById('m-rev').innerText = m.revenue;
+            const m = p.metrics || { members: 3, partners: 0, revenue: p.revenue || "0 Đ", funding: "0 Đ", products: 1 };
+            document.getElementById('m-members').innerText = `${m.members || 3} người`;
+            document.getElementById('m-partners').innerText = `${m.partners || 0}+ ĐT`;
+            document.getElementById('m-rev').innerText = p.revenue || m.revenue;
             document.getElementById('m-funding').innerText = m.funding;
-            document.getElementById('m-prod').innerText = `${m.products} SP`;
+            document.getElementById('m-prod').innerText = `${m.products || 1} SP`;
 
-            document.getElementById('d-partners').innerHTML = (p.partners_vn || ["Đang cập nhật mạng lưới đối tác thương mại hóa"]).map(item => `<li>${item}</li>`).join('');
-            document.getElementById('d-highlights').innerHTML = (p.highlights || [{date:"2026", text:"Gia nhập hệ thống uơm tạo SHTP-IC"}]).map(h => `<li class="flex items-center space-x-2 text-[11px] mb-1"><span class="bg-blue-100 text-blue-700 px-1 rounded text-[9px] font-mono font-bold">${h.date}</span><span>${h.text}</span></li>`).join('');
-            document.getElementById('d-awards').innerHTML = (p.awards || ["Chưa ghi nhận danh hiệu giải thưởng"]).map(a => `<li class="text-amber-600 font-medium"><i class="fa-solid fa-trophy mr-1.5 text-amber-500"></i>${a}</li>`).join('');
+            document.getElementById('d-partners').innerHTML = (p.partners_vn && p.partners_vn.length ? p.partners_vn : ["Đang cập nhật danh mục đối tác"]).map(item => `<li>${item}</li>`).join('');
+            document.getElementById('d-highlights').innerHTML = (p.highlights && p.highlights.length ? p.highlights : [{date:"2026", text:"Gia nhập SHTP-IC"}]).map(h => `<li class="flex items-center space-x-2 text-[11px] mb-1"><span class="bg-blue-100 text-blue-700 px-1 rounded text-[9px] font-mono font-bold">${h.date}</span><span>${h.text}</span></li>`).join('');
+            document.getElementById('d-awards').innerHTML = (p.awards && p.awards.length ? p.awards : ["Chưa ghi nhận danh hiệu giải thưởng"]).map(a => `<li class="text-amber-600 font-medium"><i class="fa-solid fa-trophy mr-1.5 text-amber-500"></i>${a}</li>`).join('');
         }
 
         function closeDetails() {
             document.getElementById('left-panel').style.display = "flex";
-            document.getElementById('left-panel').className = "w-full flex flex-col border border-slate-200 rounded-2xl p-4 transition-all duration-300 bg-white shadow-sm shrink-0";
-            if(document.getElementById('th-manager')) document.getElementById('th-manager').style.display = "";
-            if(document.getElementById('th-sec')) document.getElementById('th-sec').style.display = "";
+            document.getElementById('left-panel').className = "w-full flex flex-col border border-slate-200 rounded-2xl p-4 transition-all duration-300 bg-white shadow-sm shrink-0 overflow-hidden";
+            document.getElementById('filter-area').style.display = "grid";
+            const hiddenIds = ['th-comp', 'th-leader', 'th-sec', 'th-manager', 'th-stage', 'th-contract', 'th-expire'];
+            hiddenIds.forEach(id => { if(document.getElementById(id)) document.getElementById(id).style.display = ""; });
             document.querySelectorAll('.td-hidable').forEach(el => el.style.display = "");
             document.getElementById('right-panel').style.display = "none";
         }
-        window.onload = render;
+
+        function saveNewProject(e) {
+            e.preventDefault();
+            const projects = JSON.parse(localStorage.getItem('db_projects')) || [];
+            const targetId = document.getElementById('add-id').value.trim().toUpperCase();
+            if (projects.some(p => p.id === targetId)) { alert("Mã dự án đã tồn tại!"); return; }
+
+            const newProj = {
+                id: targetId,
+                name: document.getElementById('add-name').value.trim(),
+                company: document.getElementById('add-company').value.trim(),
+                leader: document.getElementById('add-leader').value.trim(),
+                manager: document.getElementById('add-manager').value.trim(),
+                phone: document.getElementById('add-phone').value.trim(),
+                sector: document.getElementById('add-sector').value,
+                status: 'Còn hoạt động',
+                year: new Date().getFullYear(),
+                contract: document.getElementById('add-contract').value.trim(),
+                signDate: document.getElementById('add-signDate').value,
+                stage: document.getElementById('add-stage').value,
+                expireDate: document.getElementById('add-expireDate').value,
+                intro: document.getElementById('add-intro').value.trim() || 'Chưa cập nhật...',
+                product: document.getElementById('add-product').value.trim() || 'Chưa cập nhật...',
+                supports: ["Mô hình kinh doanh"],
+                revenue: document.getElementById('add-revenue').value.trim() || '0 Đ',
+                metrics: { members: 3, partners: 0, revenue: document.getElementById('add-revenue').value.trim(), funding: document.getElementById('add-funding').value.trim(), products: parseInt(document.getElementById('add-products').value) || 1 },
+                partners_vn: [], highlights: [], awards: []
+            };
+
+            projects.push(newProj);
+            localStorage.setItem('db_projects', JSON.stringify(projects));
+            
+            // Đồng bộ tự động sang SHTT
+            const shtt = JSON.parse(localStorage.getItem('db_shtt')) || [];
+            shtt.push({ id: newProj.id, projectName: newProj.name, type: "SC", name: `TSTT của dự án ${newProj.name}`, docNum: "-", state: "Chưa nộp đơn" });
+            localStorage.setItem('db_shtt', JSON.stringify(shtt));
+
+            toggleProjectModal();
+            e.target.reset();
+            renderProjects();
+        }
+
+        window.onload = renderProjects;
     </script>
 </body>
 </html>

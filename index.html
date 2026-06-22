@@ -21,22 +21,23 @@
 
     <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900 px-4">
         <div class="bg-white w-full max-w-md p-6 sm:p-8 rounded-2xl shadow-xl text-center space-y-5 border border-slate-100">
-            <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">
+            <!-- <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">
                 <i class="fa-solid fa-layer-group"></i>
-            </div>
+            </div> -->
+            <img src="./images/logo_shtpic_cut.png" class="w-80 mx-auto" alt="Logo SHTP-IC">
             <div>
-                <h2 class="text-xl font-extrabold text-slate-800 tracking-tight">HỆ THỐNG ƯƠM TẠO SHTP-IC</h2>
+                <h2 class="text-xl font-extrabold text-slate-800 tracking-tight">HỆ THỐNG QUẢN LÝ DỰ ÁN ƯƠM TẠO</h2>
                 <p class="text-xs text-slate-400 font-medium mt-1">Hệ thống quản trị và số hóa hồ sơ doanh nghiệp</p>
             </div>
             <div id="login-error" class="hidden text-xs font-bold text-red-600 bg-red-50 p-3 rounded-xl border border-red-100">Tài khoản hoặc mật khẩu không chính xác!</div>
             <form onsubmit="handleLogin(event)" class="space-y-4 text-left">
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Tên đăng nhập</label>
-                    <input type="text" id="username" required placeholder="admin" class="w-full border border-slate-200 rounded-xl p-3 text-xs outline-none focus:border-blue-500 bg-slate-50">
+                    <input type="text" id="username" required placeholder="admin" value="admin" class="w-full border border-slate-200 rounded-xl p-3 text-xs outline-none focus:border-blue-500 bg-slate-50">
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Mật khẩu</label>
-                    <input type="password" id="password" required placeholder="******" class="w-full border border-slate-200 rounded-xl p-3 text-xs outline-none focus:border-blue-500 bg-slate-50">
+                    <input type="password" id="password" required placeholder="******" value="123456" class="w-full border border-slate-200 rounded-xl p-3 text-xs outline-none focus:border-blue-500 bg-slate-50">
                 </div>
                 <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl text-xs tracking-wider shadow-sm transition-colors">ĐĂNG NHẬP</button>
             </form>
@@ -89,11 +90,6 @@
                     </button>
                     <div id="page-icon" class="hidden sm:p-2 sm:bg-blue-50 sm:text-blue-600 sm:rounded-lg sm:text-xs sm:block"><i class="fa-solid fa-chart-line"></i></div>
                     <h2 id="page-title" class="text-xs sm:text-sm font-black text-slate-800 uppercase tracking-wider">Báo cáo tổng quan</h2>
-                </div>
-                <div class="flex items-center space-x-3">
-                    <button onclick="toggleModal('project-modal')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-xl font-bold text-[11px] sm:text-xs shadow-sm transition-colors flex items-center">
-                        <i class="fa-solid fa-plus mr-1"></i> <span class="hidden sm:inline">THÊM DỰ ÁN</span><span class="inline sm:hidden">THÊM</span>
-                    </button>
                 </div>
             </header>
 
