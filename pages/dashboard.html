@@ -4,45 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link class="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-white text-xs text-gray-700 p-2">
+<body class="bg-white text-sm text-gray-700 p-2">
     
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 mb-6">
-        <div class="col-span-2 lg:col-span-1 bg-blue-600 p-4 sm:p-5 rounded-2xl text-white shadow-sm relative overflow-hidden">
-            <p class="text-blue-100 font-bold uppercase tracking-wider text-[9px] sm:text-[10px]">Tổng doanh thu chung</p>
-            <h3 id="kpi-rev" class="text-base sm:text-xl font-black mt-1">0 Đ</h3>
-            <i class="fa-solid fa-wallet absolute -right-3 -bottom-3 text-white/10 text-5xl"></i>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-6">
+        <div class="col-span-2 lg:col-span-1 bg-blue-600 p-5 sm:p-6 rounded-2xl text-white shadow-sm relative overflow-hidden">
+            <p class="text-blue-100 font-bold uppercase tracking-wider text-xs">Tổng doanh thu chung</p>
+            <h3 id="kpi-rev" class="text-lg sm:text-2xl font-black mt-1.5">0 Đ</h3>
+            <i class="fa-solid fa-wallet absolute -right-3 -bottom-3 text-white/10 text-6xl"></i>
         </div>
-        <div class="bg-slate-50 border border-slate-100 p-4 sm:p-5 rounded-2xl flex items-center justify-between">
-            <div><p class="text-slate-400 font-bold text-[9px] sm:text-[10px] uppercase tracking-widest">Dự án vận hành</p><h3 id="kpi-total" class="text-base sm:text-xl font-black text-slate-800 mt-1">0</h3></div>
-            <div class="p-2 bg-blue-50 text-blue-600 rounded-xl text-xs"><i class="fa-solid fa-cubes"></i></div>
+        <div class="bg-slate-50 border border-slate-100 p-5 rounded-2xl flex items-center justify-between">
+            <div><p class="text-slate-400 font-bold text-xs uppercase tracking-widest">Dự án vận hành</p><h3 id="kpi-total" class="text-lg sm:text-2xl font-black text-slate-800 mt-1.5">0</h3></div>
+            <div class="p-3 bg-blue-50 text-blue-600 rounded-xl text-sm"><i class="fa-solid fa-cubes"></i></div>
         </div>
-        <div class="bg-slate-50 border border-slate-100 p-4 sm:p-5 rounded-2xl flex items-center justify-between">
-            <div><p class="text-slate-400 font-bold text-[9px] sm:text-[10px] uppercase tracking-widest">Văn bằng SHTT cấp</p><h3 id="kpi-shtt" class="text-base sm:text-xl font-black text-blue-600 mt-1">0</h3></div>
-            <div class="p-2 bg-indigo-50 text-blue-600 rounded-xl text-xs"><i class="fa-solid fa-stamp"></i></div>
+        <div class="bg-slate-50 border border-slate-100 p-5 rounded-2xl flex items-center justify-between">
+            <div><p class="text-slate-400 font-bold text-xs uppercase tracking-widest">Văn bằng SHTT cấp</p><h3 id="kpi-shtt" class="text-lg sm:text-2xl font-black text-blue-600 mt-1.5">0</h3></div>
+            <div class="p-3 bg-indigo-50 text-blue-600 rounded-xl text-sm"><i class="fa-solid fa-stamp"></i></div>
         </div>
-        <div class="bg-slate-50 border border-slate-100 p-4 sm:p-5 rounded-2xl flex items-center justify-between">
-            <div><p class="text-slate-400 font-bold text-[9px] sm:text-[10px] uppercase tracking-widest">Doanh nghiệp KHCN</p><h3 id="kpi-khcn" class="text-base sm:text-xl font-black text-emerald-600 mt-1">0</h3></div>
-            <div class="p-2 bg-emerald-50 text-emerald-600 rounded-xl text-xs"><i class="fa-solid fa-certificate"></i></div>
+        <div class="bg-slate-50 border border-slate-100 p-5 rounded-2xl flex items-center justify-between">
+            <div><p class="text-slate-400 font-bold text-xs uppercase tracking-widest">Doanh nghiệp KHCN</p><h3 id="kpi-khcn" class="text-lg sm:text-2xl font-black text-emerald-600 mt-1.5">0</h3></div>
+            <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl text-sm"><i class="fa-solid fa-certificate"></i></div>
         </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm">
-            <h3 class="font-bold text-slate-800 text-xs mb-4 uppercase tracking-wider flex items-center">
-                <span class="w-1.5 h-3.5 bg-blue-600 rounded-full mr-2"></span> Theo dõi dự án mới cập nhật
+        <div class="lg:col-span-2 border border-slate-200 rounded-2xl p-5 shadow-sm">
+            <h3 class="font-bold text-slate-800 text-sm mb-4 uppercase tracking-wider flex items-center">
+                <span class="w-1.5 h-4 bg-blue-600 rounded-full mr-2"></span> Theo dõi dự án mới cập nhật
             </h3>
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs min-w-[450px]">
-                    <thead class="bg-slate-900 text-white text-[10px] uppercase sticky top-0 z-10">
-                        <tr>
-                            <th class="p-2.5 text-center w-12">STT</th>
-                            <th class="p-3">Tên dự án</th>
-                            <th class="p-3">Tên công ty doanh nghiệp</th>
-                            <th class="p-3">Chủ nhiệm (Doanh nghiệp)</th>
-                            <th class="p-3">Lĩnh vực</th>
-                            <th class="p-3 text-center">Quản lý (SHTP-IC)</th>
+                <table class="w-full text-left text-sm min-w-[500px]">
+                    <thead>
+                        <tr class="text-slate-400 border-b border-slate-100 text-xs uppercase font-bold">
+                            <th class="pb-3">Tên Dự án</th>
+                            <th class="pb-3">Doanh nghiệp chủ quản</th>
+                            <th class="pb-3">Ngành dọc</th>
+                            <th class="pb-3 text-center w-28">Hiện trạng</th>
                         </tr>
                     </thead>
                     <tbody id="proj-body" class="divide-y divide-slate-100 text-slate-600"></tbody>
@@ -50,24 +48,19 @@
             </div>
         </div>
 
-        <div class="border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm">
-            <h3 class="font-bold text-slate-800 text-xs mb-4 uppercase tracking-wider">Cơ cấu ngành dọc (%)</h3>
+        <div class="border border-slate-200 rounded-2xl p-5 shadow-sm">
+            <h3 class="font-bold text-slate-800 text-sm mb-4 uppercase tracking-wider">Cơ cấu ngành dọc (%)</h3>
             <div id="sector-list" class="space-y-4"></div>
         </div>
     </div>
 
     <script>
         function render() {
-            // 1. Gọi dữ liệu từ kho lưu trữ bền vững
             const projects = JSON.parse(localStorage.getItem('db_projects')) || [];
             const shtt = JSON.parse(localStorage.getItem('db_shtt')) || [];
             const certs = JSON.parse(localStorage.getItem('db_certs')) || [];
-
-            // 🌟 ĐÂY LÀ DÒNG KHAI BÁO BỊ THIẾU GÂY RA LỖI "filtered is not defined"
-            // Tạo mảng filtered mặc định chứa toàn bộ dự án (hoặc bạn có thể thêm bộ lọc tìm kiếm tại đây nếu cần)
             const filtered = projects; 
 
-            // 2. Thuật toán cộng dồn doanh thu 2 lớp đầu não (Đã bọc phòng vệ chống sập)
             let totalRev = 0;
             if (window.parent && typeof window.parent.parseRevenueToNumber === 'function') {
                 totalRev = filtered.reduce((sum, p) => {
@@ -78,56 +71,45 @@
                 }, 0);
             }
 
-            // 3. Kết xuất chuỗi tiền tệ lên ô KPI tổng
             if (window.parent && typeof window.parent.formatRevenueToString === 'function') {
                 document.getElementById('kpi-rev').innerText = window.parent.formatRevenueToString(totalRev);
             } else {
                 document.getElementById('kpi-rev').innerText = totalRev.toLocaleString('vi-VN') + " Đ";
             }
 
-            // 4. Cập nhật các chỉ số đếm số lượng KPIs
-            if (document.getElementById('kpi-total')) {
-                document.getElementById('kpi-total').innerText = projects.filter(p => p.status === "Còn hoạt động").length;
-            }
-            if (document.getElementById('kpi-shtt')) {
-                document.getElementById('kpi-shtt').innerText = shtt.filter(s => s.state === 'Đã cấp giấy' || s.state === 'CB').length;
-            }
-            if (document.getElementById('kpi-khcn')) {
-                document.getElementById('kpi-khcn').innerText = certs.filter(c => c.state === 'Đã cấp giấy').length;
-            }
+            document.getElementById('kpi-total').innerText = projects.filter(p => p.status === "Còn hoạt động").length;
+            document.getElementById('kpi-shtt').innerText = shtt.filter(s => s.state === 'Đã cấp giấy' || s.state === 'CB').length;
+            document.getElementById('kpi-khcn').innerText = certs.filter(c => c.state === 'Đã cấp giấy').length;
 
-            // 5. Kết xuất bảng danh sách dự án (Sử dụng biến filtered an toàn)
             let count = 1;
             document.getElementById('proj-body').innerHTML = filtered.slice(-4).reverse().map(p => `
-                <tr class="hover:bg-indigo-50/40 transition-all">
-                    <td class="p-2.5 font-bold text-center text-slate-400 bg-slate-50/30">${count++}</td>
-                    <td class="p-2.5 font-bold text-slate-800">${p.name || '-'}</td>
-                    <td class="p-2.5 text-slate-500 font-medium">${p.company || '-'}</td>
-                    <td class="p-2.5 font-bold text-slate-700">${p.leader || '-'}</td>
-                    <td class="p-2.5"><span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium text-[10px]">${p.sector || '-'}</span></td>
-                    <td class="p-2.5 text-center text-slate-500 italic font-medium">${p.manager || '-'}</td>
+                <tr class="hover:bg-indigo-50/40 transition-all text-sm">
+                    <td class="p-3 text-center font-bold text-slate-400 bg-slate-50/30">${count++}</td>
+                    <td class="p-3 font-bold text-slate-800">${p.name || '-'}</td>
+                    <td class="p-3 text-slate-500 font-medium">${p.company || '-'}</td>
+                    <td class="p-3 font-bold text-slate-700">${p.leader || '-'}</td>
+                    <td class="p-3"><span class="bg-slate-100 text-slate-600 px-2.5 py-1 rounded font-semibold text-xs">${p.sector || '-'}</span></td>
+                    <td class="p-3 text-center text-slate-500 italic font-medium">${p.manager || '-'}</td>
                 </tr>
             `).join('');
 
-            // 6. Kết xuất cơ cấu tỷ trọng ngành dọc (%)
             const sectors = ["Công nghệ số", "IoT", "AI", "Sinh học"];
             document.getElementById('sector-list').innerHTML = sectors.map(s => {
                 const countSec = filtered.filter(p => p.sector && p.sector.includes(s)).length;
                 const percent = filtered.length ? (countSec / filtered.length * 100) : 0;
                 return `
-                    <div class="space-y-1">
-                        <div class="flex justify-between font-bold text-slate-600 text-[10px]">
+                    <div class="space-y-1.5 text-sm">
+                        <div class="flex justify-between font-bold text-slate-600">
                             <span>${s}</span>
                             <span>${countSec} DA</span>
                         </div>
-                        <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                             <div class="h-full bg-blue-600 rounded-full" style="width: ${percent}%"></div>
                         </div>
                     </div>`;
             }).join('');
         }
 
-        // Lắng nghe sự kiện để kích hoạt render mượt mà sau khi trang mẹ sẵn sàng
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(render, 150);
         });

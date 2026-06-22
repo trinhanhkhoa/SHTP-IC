@@ -5,23 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
 </head>
-<body class="bg-white text-xs text-gray-700 p-2">
+<body class="bg-white text-sm text-gray-700 p-2">
     <div class="space-y-4 border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm">
         
         <div class="flex flex-col sm:flex-row justify-between items-center gap-3">
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 flex-grow w-full">
-                <input type="text" id="search" oninput="render()" placeholder="Lọc theo tên dự án..." class="border border-slate-200 rounded-xl p-2.5 bg-slate-50 outline-none text-xs focus:border-blue-500">
-                <select id="f-type" onchange="render()" class="border border-slate-200 rounded-xl p-2 bg-white text-xs"><option value="All">Tất cả loại hình</option><option value="SC">Bằng sáng chế</option><option value="GPHI">Giải pháp hữu ích</option><option value="BQTG">Bản quyền tác giả</option><option value="NH">Nhãn hiệu</option></select>
-                <select id="f-state" onchange="render()" class="border border-slate-200 rounded-xl p-2 bg-white text-xs"><option value="All">Tất cả trạng thái</option><option value="Chưa nộp đơn">Chưa nộp đơn</option><option value="Đã nộp đơn">Đã nộp đơn</option><option value="Đã cấp giấy">Đã cấp giấy</option></select>
+                <input type="text" id="search" oninput="render()" placeholder="Lọc theo tên dự án..." class="border border-slate-200 rounded-xl p-2.5 bg-slate-50 outline-none text-sm focus:border-blue-500">
+                <select id="f-type" onchange="render()" class="border border-slate-200 rounded-xl p-2 bg-white text-sm"><option value="All">Tất cả loại hình</option><option value="SC">Bằng sáng chế</option><option value="GPHI">Giải pháp hữu ích</option><option value="BQTG">Bản quyền tác giả</option><option value="NH">Nhãn hiệu</option></select>
+                <select id="f-state" onchange="render()" class="border border-slate-200 rounded-xl p-2 bg-white text-sm"><option value="All">Tất cả trạng thái</option><option value="Chưa nộp đơn">Chưa nộp đơn</option><option value="Đã nộp đơn">Đã nộp đơn</option><option value="Đã cấp giấy">Đã cấp giấy</option></select>
             </div>
-            <button onclick="toggleLocalModal('shtt-modal')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2.5 rounded-xl shrink-0 w-full sm:w-auto flex items-center justify-center"><i class="fa-solid fa-plus mr-1.5"></i> ĐĂNG KÝ VĂN BẰNG</button>
+            <button onclick="toggleLocalModal('shtt-modal')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-xl shrink-0 w-full sm:w-auto flex items-center justify-center text-sm"><i class="fa-solid fa-plus mr-1.5"></i> ĐĂNG KÝ VĂN BẰNG</button>
         </div>
 
         <div class="overflow-hidden border border-slate-200 rounded-xl">
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs min-w-[550px]">
-                    <thead class="bg-slate-900 text-white text-[10px] uppercase font-bold">
+                <table class="w-full text-left text-sm min-w-[550px]">
+                    <thead class="bg-slate-900 text-white text-xs uppercase font-bold">
                         <tr>
                             <th class="p-3 text-center w-12">STT</th>
                             <th class="p-3">Dự án chủ quản</th>
@@ -31,7 +35,7 @@
                             <th class="p-3 text-center w-36">Hiện trạng đơn</th>
                         </tr>
                     </thead>
-                    <tbody id="tbody" class="divide-y divide-slate-100 bg-white"></tbody>
+                    <tbody id="tbody" class="divide-y divide-slate-100 bg-white text-slate-600"></tbody>
                 </table>
             </div>
         </div>
@@ -39,28 +43,27 @@
 
     <div id="shtt-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs hidden items-center justify-center z-[200] p-4">
         <div class="bg-white w-full max-w-sm rounded-2xl shadow-xl overflow-hidden border border-slate-100">
-            <div class="bg-slate-900 p-4 flex justify-between items-center text-white"><h3 class="font-bold uppercase tracking-wide text-[11px]">Đăng ký văn bằng SHTT mới</h3><button type="button" onclick="toggleLocalModal('shtt-modal')" class="text-xl leading-none">&times;</button></div>
-            <form onsubmit="saveLocalShtt(event)" class="p-5 space-y-3.5 text-xs">
+            <div class="bg-slate-900 p-4 flex justify-between items-center text-white"><h3 class="font-bold uppercase tracking-wide text-xs">Đăng ký văn bằng SHTT mới</h3><button type="button" onclick="toggleLocalModal('shtt-modal')" class="text-xl leading-none">&times;</button></div>
+            <form onsubmit="saveLocalShtt(event)" class="p-5 space-y-3.5 text-sm">
                 <div>
                     <label class="block font-bold text-slate-500 mb-1">DỰ ÁN CHỦ QUẢN SHTT *</label>
-                    <select id="add-proj-id" class="w-full border border-slate-200 p-2 rounded-xl bg-white"></select>
+                    <select id="add-proj-id" class="w-full border border-slate-200 p-2 rounded-xl bg-white text-sm"></select>
                 </div>
-                <div><label class="block font-bold text-slate-500 mb-1">TÊN TÀI SẢN TRÍ TUỆ (TSTT) *</label><input type="text" id="add-shtt-name" required class="w-full border border-slate-200 p-2 rounded-xl outline-none"></div>
+                <div><label class="block font-bold text-slate-500 mb-1">TÊN TÀI SẢN TRÍ TUỆ (TSTT) *</label><input type="text" id="add-shtt-name" required class="w-full border border-slate-200 p-2 rounded-xl outline-none text-sm"></div>
                 <div class="grid grid-cols-2 gap-2">
-                    <div><label class="block font-bold text-slate-500 mb-1">LOẠI HÌNH TSTT</label><select id="add-shtt-type" class="w-full border border-slate-200 p-2 rounded-xl bg-white"><option value="SC">Sáng chế</option><option value="GPHI">Giải pháp hữu ích</option><option value="BQTG">Bản quyền</option><option value="NH">Nhãn hiệu</option></select></div>
-                    <div><label class="block font-bold text-slate-500 mb-1">SỐ ĐƠN / SỐ CẤP</label><input type="text" id="add-shtt-num" value="-" class="w-full border border-slate-200 p-2 rounded-xl"></div>
+                    <div><label class="block font-bold text-slate-500 mb-1">LOẠI HÌNH TSTT</label><select id="add-shtt-type" class="w-full border border-slate-200 p-2 rounded-xl bg-white text-sm"><option value="SC">Sáng chế</option><option value="GPHI">Giải pháp hữu ích</option><option value="BQTG">Bản quyền</option><option value="NH">Nhãn hiệu</option></select></div>
+                    <div><label class="block font-bold text-slate-500 mb-1">SỐ ĐƠN / SỐ CẤP</label><input type="text" id="add-shtt-num" value="-" class="w-full border border-slate-200 p-2 rounded-xl text-sm"></div>
                 </div>
-                <div><label class="block font-bold text-slate-500 mb-1">HIỆN TRẠNG ĐƠN</label><select id="add-shtt-state" class="w-full border border-slate-200 p-2 rounded-xl bg-white"><option value="Chưa nộp đơn">Chưa nộp đơn</option><option value="Đã nộp đơn">Đã nộp đơn</option><option value="Đã cấp giấy">Đã cấp giấy</option></select></div>
+                <div><label class="block font-bold text-slate-500 mb-1">HIỆN TRẠNG ĐƠN</label><select id="add-shtt-state" class="w-full border border-slate-200 p-2 rounded-xl bg-white text-sm"><option value="Chưa nộp đơn">Chưa nộp đơn</option><option value="Đã nộp đơn">Đã nộp đơn</option><option value="Đã cấp giấy">Đã cấp giấy</option></select></div>
                 <div class="flex justify-end space-x-2 pt-2 border-t">
-                    <button type="button" onclick="toggleLocalModal('shtt-modal')" class="px-4 py-2 font-bold text-slate-400">Hủy</button>
-                    <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-sm">GHI NHẬN</button>
+                    <button type="button" onclick="toggleLocalModal('shtt-modal')" class="px-4 py-2 font-bold text-slate-400 text-sm">Hủy</button>
+                    <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-sm text-sm">GHI NHẬN</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        // 🌟 BẢNG MÀU LABEL LOẠI TÀI SẢN SHTT PHÂN TÁCH TRỰC QUAN ĐẬM ĐÀ HƠN
         const typeLabels = { 
             "SC": "bg-blue-50 text-blue-700 border border-blue-200 shadow-xs", 
             "GPHI": "bg-purple-50 text-purple-700 border border-purple-200 shadow-xs", 
@@ -68,7 +71,6 @@
             "NH": "bg-amber-50 text-amber-700 border border-amber-200 shadow-xs" 
         };
 
-        // 🌟 BẢNG MÀU LABEL TRẠNG THÁI TIẾN ĐỘ ĐƠN ĐỒNG BỘ
         const stateLabels = { 
             "Đã cấp giấy": "bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold", 
             "Đã nộp đơn": "bg-indigo-50 text-indigo-700 border border-indigo-200 font-medium", 
@@ -114,13 +116,13 @@
 
             let count = 1;
             document.getElementById('tbody').innerHTML = filtered.map(s => `
-                <tr class="hover:bg-slate-50/50">
+                <tr class="hover:bg-slate-50/50 text-sm">
                     <td class="p-3 text-center font-bold text-slate-400">${count++}</td>
                     <td class="p-3 font-bold text-slate-800">${s.projectName}</td>
-                    <td class="p-3"><span class="px-2.5 py-0.5 rounded text-[10px] font-black uppercase border ${typeLabels[s.type] || 'bg-slate-50 text-slate-600'}">${s.type}</span></td>
+                    <td class="p-3"><span class="px-2.5 py-1 rounded text-xs font-black uppercase border ${typeLabels[s.type] || 'bg-slate-50 text-slate-600'}">${s.type}</span></td>
                     <td class="p-3 text-slate-600 font-medium">${s.name}</td>
-                    <td class="p-3 font-mono text-slate-400 text-[11px]">${s.docNum || '-'}</td>
-                    <td class="p-3 text-center"><span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${stateLabels[s.state] || 'bg-slate-50'}">${s.state}</span></td>
+                    <td class="p-3 font-mono text-slate-400 text-xs">${s.docNum || '-'}</td>
+                    <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-full text-xs font-bold border ${stateLabels[s.state] || 'bg-slate-50'}">${s.state}</span></td>
                 </tr>
             `).join('');
         }

@@ -12,7 +12,8 @@
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        /* Cập nhật font cơ sở toàn bộ ứng dụng lớn hơn */
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; font-size: 14px; }
         .sidebar-blue { background-color: #0f172a; }
         .active-link { background-color: #2563eb; color: white !important; }
     </style>
@@ -20,26 +21,23 @@
 <body class="overflow-hidden bg-slate-50 flex h-screen w-screen relative">
 
     <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900 px-4">
-        <div class="bg-white w-full max-w-md p-6 sm:p-8 rounded-2xl shadow-xl text-center space-y-5 border border-slate-100">
-            <!-- <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mx-auto shadow-sm">
-                <i class="fa-solid fa-layer-group"></i>
-            </div> -->
+        <div class="bg-white w-full max-w-md p-6 sm:p-8 rounded-2xl shadow-xl text-center space-y-6 border border-slate-100">
             <img src="./images/logo_shtpic_cut.png" class="w-80 mx-auto" alt="Logo SHTP-IC">
             <div>
-                <h2 class="text-xl font-extrabold text-slate-800 tracking-tight">HỆ THỐNG QUẢN LÝ DỰ ÁN ƯƠM TẠO</h2>
-                <p class="text-xs text-slate-400 font-medium mt-1">Hệ thống quản trị và số hóa hồ sơ doanh nghiệp</p>
+                <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight">HỆ THỐNG QUẢN LÝ DỰ ÁN ƯƠM TẠO</h2>
+                <p class="text-sm text-slate-400 font-medium mt-1.5">Hệ thống quản trị và số hóa hồ sơ doanh nghiệp</p>
             </div>
-            <div id="login-error" class="hidden text-xs font-bold text-red-600 bg-red-50 p-3 rounded-xl border border-red-100">Tài khoản hoặc mật khẩu không chính xác!</div>
+            <div id="login-error" class="hidden text-sm font-bold text-red-600 bg-red-50 p-3 rounded-xl border border-red-100">Tài khoản hoặc mật khẩu không chính xác!</div>
             <form onsubmit="handleLogin(event)" class="space-y-4 text-left">
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Tên đăng nhập</label>
-                    <input type="text" id="username" required placeholder="admin" value="admin" class="w-full border border-slate-200 rounded-xl p-3 text-xs outline-none focus:border-blue-500 bg-slate-50">
+                    <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Tên đăng nhập</label>
+                    <input type="text" id="username" required placeholder="admin" value="admin" class="w-full border border-slate-200 rounded-xl p-3 text-sm outline-none focus:border-blue-500 bg-slate-50">
                 </div>
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Mật khẩu</label>
-                    <input type="password" id="password" required placeholder="******" value="123456" class="w-full border border-slate-200 rounded-xl p-3 text-xs outline-none focus:border-blue-500 bg-slate-50">
+                    <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Mật khẩu</label>
+                    <input type="password" id="password" required placeholder="******" value="123456" class="w-full border border-slate-200 rounded-xl p-3 text-sm outline-none focus:border-blue-500 bg-slate-50">
                 </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl text-xs tracking-wider shadow-sm transition-colors">ĐĂNG NHẬP</button>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl text-sm tracking-wider shadow-sm transition-colors">ĐĂNG NHẬP</button>
             </form>
         </div>
     </div>
@@ -51,30 +49,30 @@
                 <div class="bg-white p-2 rounded-xl inline-block mb-3 shadow-md">
                     <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center font-black text-white text-sm">IC</div>
                 </div>
-                <h1 class="text-[10px] font-black tracking-[0.2em] text-blue-400 uppercase">Saigon Hi-Tech Park</h1>
+                <h1 class="text-xs font-black tracking-[0.2em] text-blue-400 uppercase">Saigon Hi-Tech Park</h1>
             </div>
 
             <nav class="flex-grow py-4 space-y-1.5 px-3 overflow-y-auto">
-                <button onclick="switchPage('dashboard')" id="btn-dashboard" class="nav-link w-full flex items-center px-4 py-3.5 text-slate-400 hover:text-white hover:bg-slate-800/60 text-xs font-bold transition-all rounded-xl active-link">
-                    <i class="fa-solid fa-chart-line text-sm w-5 mr-3 shrink-0"></i>
+                <button onclick="switchPage('dashboard')" id="btn-dashboard" class="nav-link w-full flex items-center px-4 py-3.5 text-slate-400 hover:text-white hover:bg-slate-800/60 text-sm font-bold transition-all rounded-xl active-link">
+                    <i class="fa-solid fa-chart-line text-base w-5 mr-3 shrink-0"></i>
                     <span class="text-left leading-tight">BÁO CÁO TỔNG QUAN</span>
                 </button>
-                <button onclick="switchPage('projects')" id="btn-projects" class="nav-link w-full flex items-center px-4 py-3.5 text-slate-400 hover:text-white hover:bg-slate-800/60 text-xs font-bold transition-all rounded-xl">
-                    <i class="fa-solid fa-cubes text-sm w-5 mr-3 shrink-0"></i>
+                <button onclick="switchPage('projects')" id="btn-projects" class="nav-link w-full flex items-center px-4 py-3.5 text-slate-400 hover:text-white hover:bg-slate-800/60 text-sm font-bold transition-all rounded-xl">
+                    <i class="fa-solid fa-cubes text-base w-5 mr-3 shrink-0"></i>
                     <span class="text-left leading-tight">DANH MỤC DỰ ÁN</span>
                 </button>
-                <button onclick="switchPage('shtt')" id="btn-shtt" class="nav-link w-full flex items-center px-4 py-3.5 text-slate-400 hover:text-white hover:bg-slate-800/60 text-xs font-bold transition-all rounded-xl">
-                    <i class="fa-solid fa-gavel text-sm w-5 mr-3 shrink-0"></i>
+                <button onclick="switchPage('shtt')" id="btn-shtt" class="nav-link w-full flex items-center px-4 py-3.5 text-slate-400 hover:text-white hover:bg-slate-800/60 text-sm font-bold transition-all rounded-xl">
+                    <i class="fa-solid fa-gavel text-base w-5 mr-3 shrink-0"></i>
                     <span class="text-left leading-tight">SỞ HỮU TRÍ TUỆ</span>
                 </button>
-                <button onclick="switchPage('certs')" id="btn-certs" class="nav-link w-full flex items-center px-4 py-3.5 text-slate-400 hover:text-white hover:bg-slate-800/60 text-xs font-bold transition-all rounded-xl">
-                    <i class="fa-solid fa-award text-sm w-5 mr-3 shrink-0"></i>
+                <button onclick="switchPage('certs')" id="btn-certs" class="nav-link w-full flex items-center px-4 py-3.5 text-slate-400 hover:text-white hover:bg-slate-800/60 text-sm font-bold transition-all rounded-xl">
+                    <i class="fa-solid fa-award text-base w-5 mr-3 shrink-0"></i>
                     <span class="text-left leading-tight">CHỨNG NHẬN & TIÊU CHUẨN</span>
                 </button>
             </nav>
 
             <div class="p-4 border-t border-slate-800">
-                <button onclick="handleLogout()" class="w-full flex items-center justify-center py-3 bg-slate-800 hover:bg-red-950/40 text-slate-400 hover:text-red-400 rounded-xl transition-all font-bold text-[10px] uppercase tracking-wider">
+                <button onclick="handleLogout()" class="w-full flex items-center justify-center py-3 bg-slate-800 hover:bg-red-950/40 text-slate-400 hover:text-red-400 rounded-xl transition-all font-bold text-xs uppercase tracking-wider">
                     <i class="fa-solid fa-power-off mr-2"></i> Đăng xuất
                 </button>
             </div>
@@ -88,8 +86,8 @@
                     <button onclick="toggleMobileSidebar()" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl lg:hidden">
                         <i class="fa-solid fa-bars text-sm"></i>
                     </button>
-                    <div id="page-icon" class="hidden sm:p-2 sm:bg-blue-50 sm:text-blue-600 sm:rounded-lg sm:text-xs sm:block"><i class="fa-solid fa-chart-line"></i></div>
-                    <h2 id="page-title" class="text-xs sm:text-sm font-black text-slate-800 uppercase tracking-wider">Báo cáo tổng quan</h2>
+                    <div id="page-icon" class="hidden sm:p-2 sm:bg-blue-50 sm:text-blue-600 sm:rounded-lg sm:text-sm sm:block"><i class="fa-solid fa-chart-line"></i></div>
+                    <h2 id="page-title" class="text-sm sm:text-base font-black text-slate-800 uppercase tracking-wider">Báo cáo tổng quan</h2>
                 </div>
             </header>
 
@@ -107,7 +105,6 @@
             overlay.classList.toggle('hidden');
         }
 
-        // Tự động đóng menu trên mobile khi người dùng click chọn chuyển đổi trang
         const nativeSwitchPage = switchPage;
         switchPage = function(page) {
             if (typeof nativeSwitchPage === 'function') nativeSwitchPage(page);
