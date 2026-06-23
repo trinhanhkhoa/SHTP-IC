@@ -16,7 +16,7 @@
         <div id="filter-area" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-2.5 flex-grow w-full">
             <input type="text" id="search-proj" oninput="renderProjects()" placeholder="Tìm theo tên dự án, công ty, chủ nhiệm..." class="border border-slate-200 rounded-xl p-2.5 bg-slate-50 outline-none text-sm focus:border-blue-500">
             <select id="filter-sector" onchange="renderProjects()" class="border border-slate-200 rounded-xl p-2 bg-white text-sm">
-                <option value="All">Tất cả ngành dọc</option>
+                <option value="All">Tất cả lĩnh vực</option>
                 <option value="Công nghệ số">Công nghệ số</option>
                 <option value="IoT">IoT</option>
                 <option value="AI">AI</option>
@@ -164,14 +164,15 @@
                 </div>
 
                 <div class="space-y-3">
-                    <div class="flex justify-between items-center border-b pb-1"><h4 class="font-bold text-blue-600 text-xs uppercase tracking-wider">Phần II: Nội dung thuyết minh</h4><span id="intro-word-count" class="text-slate-400 text-xs">0/400 từ</span></div>
+                    <div class="flex justify-between items-center border-b pb-1"><h4 class="font-bold text-blue-600 text-xs uppercase tracking-wider">Phần II: Nội dung thuyết minh</h4></div>
                     <div><textarea id="add-intro" rows="2" oninput="validateWordLimit(this, 'intro-word-count')" placeholder="Tổng quan dự án..." class="w-full border border-slate-200 p-2 rounded-xl outline-none focus:border-blue-500"></textarea></div>
-                    <div class="flex justify-between items-center"><span id="product-word-count" class="text-slate-400 text-xs ml-auto">0/400 từ</span></div>
+                    <div class="flex justify-between items-center"><span id="intro-word-count" class="text-slate-400 text-xs ml-auto">0/400 từ</span></div>
                     <div><textarea id="add-product" rows="2" oninput="validateWordLimit(this, 'product-word-count')" placeholder="Mô tả sản phẩm..." class="w-full border border-slate-200 p-2 rounded-xl outline-none focus:border-blue-500"></textarea></div>
+                    <div class="flex justify-between items-center"><span id="product-word-count" class="text-slate-400 text-xs ml-auto">0/400 từ</span></div>
                 </div>
 
                 <div class="space-y-3">
-                    <h4 class="font-bold text-blue-600 border-b pb-1 text-xs uppercase tracking-wider">Phần III: KPIs hoạt động (Metrics)</h4>
+                    <h4 class="font-bold text-blue-600 border-b pb-1 text-xs uppercase tracking-wider">Phần III: KPIs hoạt động</h4>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
                         <div><label class="block font-bold text-slate-400 mb-1 text-xs">Doanh thu</label><input type="text" id="add-revenue" value="0 Đ" class="w-full border border-slate-200 p-2 rounded-lg text-center outline-none"></div>
                         <div><label class="block font-bold text-slate-400 mb-1 text-xs">Vốn gọi</label><input type="text" id="add-funding" value="0 Đ" class="w-full border border-slate-200 p-2 rounded-lg text-center outline-none"></div>
