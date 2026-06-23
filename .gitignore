@@ -1,0 +1,12 @@
+# Bỏ qua toàn bộ thư mục thư viện tải về
+node_modules/
+
+# Bỏ qua các file log hoặc file hệ thống của Mac
+.DS_Store
+*.log
+
+# Bỏ qua các file chứa mật khẩu hoặc key bảo mật (nếu bạn có tạo sau này)
+.env
+*.pem
+*.key
+*.pfx
