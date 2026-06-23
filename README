@@ -22,3 +22,55 @@ shtp-ic-fullstack/
         ├── 📄 projects.html
         ├── 📄 shtt.html
         └── 📄 certs.html
+
+
+Run Database by MongoDB
+Cách 1:
+    Bước 1: Mở Terminal ──> Chạy lệnh `sudo mongod --dbpath=/Users/user/data/db` (Để im cửa sổ này không được tắt)
+                                │
+                                ▼
+    Bước 2: Mở Mongo Compass ──> Bấm "Connect" để quản lý dữ liệu trực quan bằng chuột
+                                │
+                                ▼
+    Bước 3: Vào VS Code ──> Chạy `node server.js` và code Frontend để test Dashboard
+
+Cách 2:
+    ### Bước 1: Cài đặt Homebrew (Nếu máy bạn chưa có)
+    Kiểm tra xem MacBook của bạn đã cài Homebrew chưa bằng lệnh:
+    ```brew --version```
+
+    * **Nếu máy đã báo phiên bản** (ví dụ: `Homebrew 4.x.x`), bạn bỏ qua bước này và xuống thẳng Bước 2.
+    * **Nếu báo lệnh không tồn tại (`command not found`),** hãy sao chép và chạy lệnh sau để cài đặt:
+
+    ```
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew install/HEAD/install.sh)"
+    ```
+
+    ### Bước 2: Tải và cài đặt lõi MongoDB chính thức thông qua Homebrew
+    Sau khi đã có Homebrew, bạn chạy liên tiếp 3 lệnh sau để tải bản MongoDB Community Edition (bản dành cho nhà phát triển):
+
+    ```bash
+    # 1. Nhận diện kho lưu trữ chính thức của MongoDB trên Brew
+    brew tap mongodb/brew
+
+    # 2. Cập nhật lại toàn bộ hệ thống Brew
+    brew update
+
+    # 3. Tiến hành cài đặt lõi MongoDB mới nhất
+    brew install mongodb-community
+    ```
+
+    ### Bước 3: Kích hoạt MongoDB chạy ngầm vĩnh viễn
+    Sau khi cài đặt xong ở Bước 2, bạn ra lệnh cho macOS biến MongoDB thành một dịch vụ chạy ngầm tự động khởi động khi mở máy bằng lệnh:
+
+    ```bash
+    brew services start mongodb-community@8.0
+
+    ```
+
+    Để chắc chắn hệ thống đã chạy tốt và không gặp lỗi, bạn chạy lệnh kiểm tra trạng thái:
+
+    ```bash
+    brew services list
+
+    *(Trong trường hợp sau này bạn đi công tác hoặc không muốn MongoDB chạy ngầm làm tốn pin Mac nữa, bạn chỉ cần mở Terminal gõ lệnh dừng: `brew services stop mongodb-community@8.0` là xong).*
