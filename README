@@ -1,0 +1,24 @@
+shtp-ic-fullstack/
+├── 📁 backend/
+│   ├── 📄 package.json
+│   ├── 📄 .env                  (Biến môi trường: PORT, MONGO_URI, JWT_SECRET)
+│   ├── 📄 server.js             (Khởi chạy & cấu hình ứng dụng)
+│   ├── 📁 config/
+│   │   └── 📄 db.js             (Kết nối MongoDB)
+│   ├── 📁 models/
+│   │   ├── 📄 User.js           (Schema người dùng & tài khoản)
+│   │   ├── 📄 Project.js        (Schema 10 cột dự án)
+│   │   ├── 📄 Shtt.js           (Schema tài sản trí tuệ)
+│   │   └── 📄 Cert.js           (Schema chứng nhận doanh nghiệp)
+│   └── 📁 controllers/
+│       ├── 📄 authController.js (Logic Đăng ký/Đăng nhập/Bảo mật)
+│       └── 📄 dataController.js (Logic CRUD Dự án, SHTT, Chứng nhận)
+└── 📁 frontend/                 (Chứa mã giao diện phẳng hiện tại của bạn)
+    ├── 📄 index.html            (Shell chính gọi API đăng nhập)
+    ├── 📁 js/
+    │   └── 📄 app.js            (Xử lý fetch API động, quản lý JWT)
+    └── 📁 pages/
+        ├── 📄 dashboard.html
+        ├── 📄 projects.html
+        ├── 📄 shtt.html
+        └── 📄 certs.html
