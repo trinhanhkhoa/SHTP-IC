@@ -19,12 +19,12 @@
                 <select id="f-type" onchange="render()" class="border border-slate-200 rounded-xl p-2 bg-white text-sm"><option value="All">Tất cả loại hình</option><option value="SC">Bằng sáng chế</option><option value="GPHI">Giải pháp hữu ích</option><option value="BQTG">Bản quyền tác giả</option><option value="NH">Nhãn hiệu</option></select>
                 <select id="f-state" onchange="render()" class="border border-slate-200 rounded-xl p-2 bg-white text-sm"><option value="All">Tất cả trạng thái</option><option value="Chưa nộp đơn">Chưa nộp đơn</option><option value="Đã nộp đơn">Đã nộp đơn</option><option value="Đã cấp giấy">Đã cấp giấy</option></select>
             </div>
-            <button onclick="toggleLocalModal('shtt-modal')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-xl shrink-0 w-full sm:w-auto flex items-center justify-center text-sm"><i class="fa-solid fa-plus mr-1.5"></i> ĐĂNG KÝ VĂN BẰNG</button>
+            <button onclick="toggleLocalModal('shtt-modal')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded-xl shrink-0 w-full sm:w-auto flex items-center justify-center text-sm"><i class="fa-solid fa-plus mr-1.5"></i> KHAI BÁO VĂN BẰNG</button>
         </div>
 
         <div class="overflow-hidden border border-slate-200 rounded-xl">
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm min-w-[550px]">
+                <table class="w-full text-left text-sm min-w-[650px]">
                     <thead class="bg-slate-900 text-white text-xs uppercase font-bold">
                         <tr>
                             <th class="p-3 text-center w-12">STT</th>
@@ -32,6 +32,7 @@
                             <th class="p-3">Phân loại SHTT</th>
                             <th class="p-3">Tên tài sản trí tuệ (TSTT)</th>
                             <th class="p-3 font-mono">Số đơn</th>
+                            <th class="p-3 text-center w-32">Ngày nộp đơn</th>
                             <th class="p-3 text-center w-36">Hiện trạng đơn</th>
                         </tr>
                     </thead>
@@ -43,7 +44,7 @@
 
     <div id="shtt-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs hidden items-center justify-center z-[200] p-4">
         <div class="bg-white w-full max-w-sm rounded-2xl shadow-xl overflow-hidden border border-slate-100">
-            <div class="bg-slate-900 p-4 flex justify-between items-center text-white"><h3 class="font-bold uppercase tracking-wide text-xs">Đăng ký văn bằng SHTT mới</h3><button type="button" onclick="toggleLocalModal('shtt-modal')" class="text-xl leading-none">&times;</button></div>
+            <div class="bg-slate-900 p-4 flex justify-between items-center text-white"><h3 class="font-bold uppercase tracking-wide text-xs">Khai báo văn bằng SHTT mới</h3><button type="button" onclick="toggleLocalModal('shtt-modal')" class="text-xl leading-none">&times;</button></div>
             <form onsubmit="saveLocalShtt(event)" class="p-5 space-y-3.5 text-sm">
                 <div>
                     <label class="block font-bold text-slate-500 mb-1">DỰ ÁN CHỦ QUẢN SHTT *</label>
@@ -54,6 +55,7 @@
                     <div><label class="block font-bold text-slate-500 mb-1">LOẠI HÌNH TSTT</label><select id="add-shtt-type" class="w-full border border-slate-200 p-2 rounded-xl bg-white text-sm"><option value="SC">Sáng chế</option><option value="GPHI">Giải pháp hữu ích</option><option value="BQTG">Bản quyền</option><option value="NH">Nhãn hiệu</option></select></div>
                     <div><label class="block font-bold text-slate-500 mb-1">SỐ ĐƠN / SỐ CẤP</label><input type="text" id="add-shtt-num" value="-" class="w-full border border-slate-200 p-2 rounded-xl text-sm"></div>
                 </div>
+                <div><label class="block font-bold text-slate-500 mb-1">NGÀY NỘP ĐƠN</label><input type="date" id="add-shtt-doc-date" class="w-full border border-slate-200 p-2 rounded-xl text-sm outline-none"></div>
                 <div><label class="block font-bold text-slate-500 mb-1">HIỆN TRẠNG ĐƠN</label><select id="add-shtt-state" class="w-full border border-slate-200 p-2 rounded-xl bg-white text-sm"><option value="Chưa nộp đơn">Chưa nộp đơn</option><option value="Đã nộp đơn">Đã nộp đơn</option><option value="Đã cấp giấy">Đã cấp giấy</option></select></div>
                 <div class="flex justify-end space-x-2 pt-2 border-t">
                     <button type="button" onclick="toggleLocalModal('shtt-modal')" class="px-4 py-2 font-bold text-slate-400 text-sm">Hủy</button>
@@ -64,6 +66,8 @@
     </div>
 
     <script>
+        let projects = [];
+        let db_shtt = [];
         const typeLabels = { 
             "SC": "bg-blue-50 text-blue-700 border border-blue-200 shadow-xs", 
             "GPHI": "bg-purple-50 text-purple-700 border border-purple-200 shadow-xs", 
@@ -80,13 +84,17 @@
         function toggleLocalModal(id) { const el = document.getElementById(id); el.classList.toggle('hidden'); el.classList.toggle('flex'); if(!el.classList.contains('hidden')) loadProjectOptions(); }
         
         function loadProjectOptions() {
-            const projects = JSON.parse(localStorage.getItem('db_projects')) || [];
             document.getElementById('add-proj-id').innerHTML = projects.map(p => `<option value="${p.id}">${p.name} (${p.id})</option>`).join('');
         }
 
-        function saveLocalShtt(e) {
+        function formatDateVN(dateText) {
+            if (!dateText) return '-';
+            const [year, month, day] = dateText.split('-');
+            return year && month && day ? `${day}/${month}/${year}` : dateText;
+        }
+
+        async function saveLocalShtt(e) {
             e.preventDefault();
-            const projects = JSON.parse(localStorage.getItem('db_projects')) || [];
             const selectedProjId = document.getElementById('add-proj-id').value;
             const foundProj = projects.find(p => p.id === selectedProjId);
 
@@ -96,18 +104,23 @@
                 type: document.getElementById('add-shtt-type').value,
                 name: document.getElementById('add-shtt-name').value.trim(),
                 docNum: document.getElementById('add-shtt-num').value.trim(),
+                docDate: document.getElementById('add-shtt-doc-date').value,
                 state: document.getElementById('add-shtt-state').value
             };
 
-            if (window.parent && typeof window.parent.submitNewShttData === 'function') {
-                window.parent.submitNewShttData(newShttRecord);
-                toggleLocalModal('shtt-modal');
-                render();
+            try {
+                await window.parent.apiPost('/shtt', newShttRecord);
+                db_shtt = await window.parent.apiGet('/shtt');
+            } catch (err) {
+                alert(err.message);
+                return;
             }
+            toggleLocalModal('shtt-modal');
+            e.target.reset();
+            render();
         }
 
         function render() {
-            const db_shtt = JSON.parse(localStorage.getItem('db_shtt')) || [];
             const query = document.getElementById('search').value.toLowerCase().trim();
             const type = document.getElementById('f-type').value;
             const state = document.getElementById('f-state').value;
@@ -122,11 +135,23 @@
                     <td class="p-3"><span class="px-2.5 py-1 rounded text-xs font-black uppercase border ${typeLabels[s.type] || 'bg-slate-50 text-slate-600'}">${s.type}</span></td>
                     <td class="p-3 text-slate-600 font-medium">${s.name}</td>
                     <td class="p-3 font-mono text-slate-400 text-xs">${s.docNum || '-'}</td>
+                    <td class="p-3 text-center text-slate-500 font-medium">${formatDateVN(s.docDate)}</td>
                     <td class="p-3 text-center"><span class="px-2.5 py-1 rounded-full text-xs font-bold border ${stateLabels[s.state] || 'bg-slate-50'}">${s.state}</span></td>
                 </tr>
             `).join('');
         }
-        window.onload = render;
+        window.onload = async function() {
+            try {
+                [projects, db_shtt] = await Promise.all([
+                    window.parent.apiGet('/projects'),
+                    window.parent.apiGet('/shtt')
+                ]);
+                loadProjectOptions();
+                render();
+            } catch (err) {
+                alert(err.message);
+            }
+        };
     </script>
 </body>
 </html>

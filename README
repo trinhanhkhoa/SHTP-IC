@@ -24,7 +24,8 @@ shtp-ic-fullstack/
         └── 📄 certs.html
 
 
-Run Database by MongoDB
+Run Database by MongoDB 
+    Link ytb: https://www.youtube.com/watch?v=8gUQL2zlpvI
 Cách 1:
     Bước 1: Mở Terminal ──> Chạy lệnh `sudo mongod --dbpath=/Users/user/data/db` (Để im cửa sổ này không được tắt)
                                 │

@@ -1,12 +1,21 @@
 {
-  "name": "shtp-ic-dashboard",
+  "name": "shtp-ic-backend",
   "version": "1.0.0",
-  "description": "He thong so hoa quan ly uom tao SHTP-IC",
-  "main": "index.html",
+  "description": "Backend API cho hệ thống quản lý ươm tạo SHTP-IC",
+  "main": "server.js",
   "scripts": {
-    "dev": "browser-sync start --server --files \"index.html, css/*.css, js/*.js, pages/*.html\""
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.3.1"
   },
   "devDependencies": {
-    "browser-sync": "^3.0.3"
+    "nodemon": "^3.1.0"
   }
 }

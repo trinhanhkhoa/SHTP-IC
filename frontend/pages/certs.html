@@ -19,8 +19,8 @@
 
         <div class="overflow-hidden border border-slate-200 rounded-xl">
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs min-w-[550px]">
-                    <thead class="bg-slate-900 text-white text-[9px] uppercase font-bold">
+                <table class="w-full text-left text-sm min-w-[550px]">
+                    <thead class="bg-slate-900 text-white text-xs uppercase font-bold">
                         <tr>
                             <th class="p-3 text-center w-12">STT</th>
                             <th class="p-3">Doanh nghiệp ươm tạo</th>
@@ -43,7 +43,14 @@
                     <label class="block font-bold text-slate-500 mb-1">DOANH NGHIỆP ỦY THÁC *</label>
                     <select id="add-comp-id" class="w-full border border-slate-200 p-2 rounded-xl bg-white"></select>
                 </div>
-                <div><label class="block font-bold text-slate-500 mb-1">MỤC TIÊU CHỨNG CHỈ / TIÊU CHUẨN *</label><input type="text" id="add-cert-type" required placeholder="Ví dụ: ISO 9001:2015 hoặc TCCS" class="w-full border border-slate-200 p-2 rounded-xl outline-none"></div>
+                <div>
+                    <label class="block font-bold text-slate-500 mb-1">MỤC TIÊU CHỨNG CHỈ / TIÊU CHUẨN *</label>
+                    <select id="add-cert-type" required class="w-full border border-slate-200 p-2 rounded-xl bg-white outline-none">
+                        <option value="Chứng nhận ISO">Chứng nhận ISO</option>
+                        <option value="Chứng nhận TCCS">Chứng nhận TCCS</option>
+                        <option value="Chứng nhận DN KH&CN">Chứng nhận DN KH&CN</option>
+                    </select>
+                </div>
                 <div><label class="block font-bold text-slate-500 mb-1">HIỆN TRẠNG HỒ SƠ</label><select id="add-cert-state" class="w-full border border-slate-200 p-2 rounded-xl bg-white"><option value="Chưa nộp đơn">Chưa nộp đơn</option><option value="Đã nộp đơn">Đã nộp đơn</option><option value="Đã cấp giấy">Đã cấp giấy</option></select></div>
                 <div><label class="block font-bold text-slate-500 mb-1">GHI CHÚ NGHIỆP VỤ</label><input type="text" id="add-cert-note" value="Đang hoàn thiện đề tài cơ sở" class="w-full border border-slate-200 p-2 rounded-xl outline-none"></div>
                 <div class="flex justify-end space-x-2 pt-2 border-t">
@@ -55,38 +62,42 @@
     </div>
 
     <script>
+        let projects = [];
+        let db_certs = [];
         const certLabels = { "Đã cấp giấy": "bg-emerald-50 text-emerald-600 border border-emerald-100 font-bold", "Đã nộp đơn": "bg-blue-50 text-blue-600 border border-blue-100 font-medium", "Chưa nộp đơn": "bg-slate-100 text-slate-400" };
 
         function toggleLocalModal(id) { const el = document.getElementById(id); el.classList.toggle('hidden'); el.classList.toggle('flex'); if(!el.classList.contains('hidden')) loadCompanyOptions(); }
         
         function loadCompanyOptions() {
-            const projects = JSON.parse(localStorage.getItem('db_projects')) || [];
             document.getElementById('add-comp-id').innerHTML = projects.map(p => `<option value="${p.company}">${p.company}</option>`).join('');
         }
 
-        function saveLocalCert(e) {
+        async function saveLocalCert(e) {
             e.preventDefault();
-            const projects = JSON.parse(localStorage.getItem('db_projects')) || [];
             const selectedComp = document.getElementById('add-comp-id').value;
             const foundProj = projects.find(p => p.company === selectedComp);
 
             const newCertRecord = {
                 id: foundProj ? foundProj.id : "DA000",
                 companyName: selectedComp,
-                type: document.getElementById('add-cert-type').value.trim(),
+                type: document.getElementById('add-cert-type').value,
                 state: document.getElementById('add-cert-state').value,
                 note: document.getElementById('add-cert-note').value.trim()
             };
 
-            if (window.parent && typeof window.parent.submitNewCertData === 'function') {
-                window.parent.submitNewCertData(newCertRecord);
-                toggleLocalModal('cert-modal');
-                render();
+            try {
+                await window.parent.apiPost('/certs', newCertRecord);
+                db_certs = await window.parent.apiGet('/certs');
+            } catch (err) {
+                alert(err.message);
+                return;
             }
+            toggleLocalModal('cert-modal');
+            e.target.reset();
+            render();
         }
 
         function render() {
-            const db_certs = JSON.parse(localStorage.getItem('db_certs')) || [];
             const query = document.getElementById('search').value.toLowerCase().trim();
             const state = document.getElementById('f-state').value;
             let filtered = db_certs.filter(c => (c.companyName || '').toLowerCase().includes(query) && (state === 'All' || c.state === state));
@@ -104,7 +115,18 @@
         }
         document.getElementById('search').oninput = render;
         document.getElementById('f-state').onchange = render;
-        window.onload = render;
+        window.onload = async function() {
+            try {
+                [projects, db_certs] = await Promise.all([
+                    window.parent.apiGet('/projects'),
+                    window.parent.apiGet('/certs')
+                ]);
+                loadCompanyOptions();
+                render();
+            } catch (err) {
+                alert(err.message);
+            }
+        };
     </script>
 </body>
 </html>

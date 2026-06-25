@@ -55,10 +55,12 @@
     </div>
 
     <script>
-        function render() {
-            const projects = JSON.parse(localStorage.getItem('db_projects')) || [];
-            const shtt = JSON.parse(localStorage.getItem('db_shtt')) || [];
-            const certs = JSON.parse(localStorage.getItem('db_certs')) || [];
+        async function render() {
+            const [projects, shtt, certs] = await Promise.all([
+                window.parent.apiGet('/projects'),
+                window.parent.apiGet('/shtt'),
+                window.parent.apiGet('/certs')
+            ]);
             const filtered = projects; 
 
             let totalRev = 0;
@@ -111,7 +113,7 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(render, 150);
+            setTimeout(() => render().catch(err => alert(err.message)), 150);
         });
     </script>
 </body>

@@ -120,7 +120,7 @@
     </div>
 
     <div id="local-project-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs hidden items-center justify-center z-[200] p-2 sm:p-4 overflow-y-auto">
-        <div class="bg-white w-full max-w-3xl rounded-2xl shadow-xl overflow-hidden border border-slate-100 my-auto">
+        <div class="bg-white w-full max-w-4xl rounded-2xl shadow-xl overflow-hidden border border-slate-100 my-auto">
             <div class="bg-slate-900 p-4 flex justify-between items-center text-white">
                 <h3 class="font-bold text-sm uppercase tracking-wide flex items-center"><i class="fa-solid fa-folder-plus mr-2 text-blue-500"></i> Khai báo thông tin dự án mới</h3>
                 <button type="button" onclick="toggleProjectModal()" class="text-xl hover:text-slate-300 leading-none">&times;</button>
@@ -129,10 +129,7 @@
             <form onsubmit="saveNewProject(event)" class="p-5 sm:p-6 space-y-4 text-sm max-h-[80vh] overflow-y-auto">
                 <div class="space-y-3">
                     <h4 class="font-bold text-blue-600 border-b pb-1 text-xs uppercase tracking-wider">Phần I: Thông tin chung</h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div><label class="block font-bold text-slate-500 mb-1">MÃ DỰ ÁN (ID) *</label><input type="text" id="add-id" required placeholder="Ví dụ: DA009" class="w-full border border-slate-200 p-2.5 rounded-xl outline-none focus:border-blue-500 bg-slate-50"></div>
-                        <div><label class="block font-bold text-slate-500 mb-1">TÊN DỰ ÁN ƯƠM TẠO *</label><input type="text" id="add-name" required placeholder="Ví dụ: Robot thông minh" class="w-full border border-slate-200 p-2.5 rounded-xl outline-none focus:border-blue-500"></div>
-                    </div>
+                    <div><label class="block font-bold text-slate-500 mb-1">TÊN DỰ ÁN ƯƠM TẠO *</label><input type="text" id="add-name" required placeholder="Ví dụ: Robot thông minh" class="w-full border border-slate-200 p-2.5 rounded-xl outline-none focus:border-blue-500"></div>
                     <div><label class="block font-bold text-slate-500 mb-1">TÊN CÔNG TY CHỦ QUẢN *</label><input type="text" id="add-company" required placeholder="Công ty TNHH..." class="w-full border border-slate-200 p-2.5 rounded-xl outline-none focus:border-blue-500"></div>
                     
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -190,6 +187,7 @@
     </div>
 
     <script>
+        let projects = [];
         const statusColors = { "Còn hoạt động": "bg-emerald-50 text-emerald-700 border border-emerald-100", "Tạm ngừng": "bg-amber-50 text-amber-700 border border-amber-100", "Ngưng hoạt động": "bg-rose-50 text-rose-700 border border-rose-100" };
         
         const sectorColors = {
@@ -220,7 +218,7 @@
             else if (stage === "Ươm tạo") d.setMonth(d.getMonth() + 12);
             else if (stage === "Tăng tốc") d.setMonth(d.getMonth() + 18);
             else if (stage === "Hậu ươm tạo") d.setFullYear(d.getFullYear() + 7);
-            expireInput.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+            expireInput.value = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
         }
 
         function validateWordLimit(textarea, counterId) {
@@ -234,7 +232,6 @@
         }
 
         function initDynamicFilters() {
-            const projects = JSON.parse(localStorage.getItem('db_projects')) || [];
             const managers = [...new Set(projects.map(p => p.manager).filter(m => m))];
             const managerSelect = document.getElementById('filter-manager');
             managerSelect.innerHTML = '<option value="All">Tất cả chuyên viên quản lý</option>' + 
@@ -242,7 +239,6 @@
         }
 
         function renderProjects() {
-            const projects = JSON.parse(localStorage.getItem('db_projects')) || [];
             const query = document.getElementById('search-proj').value.toLowerCase().trim();
             const sector = document.getElementById('filter-sector').value;
             const manager = document.getElementById('filter-manager').value;
@@ -278,7 +274,6 @@
         }
 
         function showDetails(id) {
-            const projects = JSON.parse(localStorage.getItem('db_projects')) || [];
             const p = projects.find(item => item.id === id);
             if(!p) return;
 
@@ -339,14 +334,10 @@
             document.getElementById('right-panel').style.display = "none";
         }
 
-        function saveNewProject(e) {
+        async function saveNewProject(e) {
             e.preventDefault();
-            const projects = JSON.parse(localStorage.getItem('db_projects')) || [];
-            const targetId = document.getElementById('add-id').value.trim().toUpperCase();
-            if (projects.some(p => p.id === targetId)) { alert("Mã dự án đã tồn tại!"); return; }
 
             const newProj = {
-                id: targetId,
                 name: document.getElementById('add-name').value.trim(),
                 company: document.getElementById('add-company').value.trim(),
                 leader: document.getElementById('add-leader').value.trim(),
@@ -367,12 +358,13 @@
                 partners_vn: [], highlights: [], awards: []
             };
 
-            projects.push(newProj);
-            localStorage.setItem('db_projects', JSON.stringify(projects));
-            
-            const shtt = JSON.parse(localStorage.getItem('db_shtt')) || [];
-            shtt.push({ id: newProj.id, projectName: newProj.name, type: "SC", name: `TSTT của dự án ${newProj.name}`, docNum: "-", state: "Chưa nộp đơn" });
-            localStorage.setItem('db_shtt', JSON.stringify(shtt));
+            try {
+                await window.parent.apiPost('/projects', newProj);
+                projects = await window.parent.apiGet('/projects');
+            } catch (err) {
+                alert(err.message);
+                return;
+            }
 
             toggleProjectModal();
             e.target.reset();
@@ -380,7 +372,12 @@
             renderProjects();
         }
 
-        window.onload = function() {
+        window.onload = async function() {
+            try {
+                projects = await window.parent.apiGet('/projects');
+            } catch (err) {
+                alert(err.message);
+            }
             initDynamicFilters();
             renderProjects();
         };
